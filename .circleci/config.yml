@@ -16,8 +16,28 @@ jobs:
           command: |
             source activate httoolsenv/ && \
             bash test_snakemake.sh
+
+  build-docs:
+    docker:
+      - image: continuumio/miniconda3:latest
+
+    steps:
+      - checkout
+      - run:
+          name: install requirements
+          command: conda env create -p sphinxenv --file docs/requirements-docs.yaml
+      - run:
+          name: OK for unknown github host
+          command: mkdir -p ~/.ssh/ && echo -e "Host github.com\n\tStrictHostKeyChecking no\n" > ~/.ssh/config
+      - add_ssh_keys:
+          fingerprints:
+            - $CIRCLECI_KEY
+      - run:
+          name: Build and upload docs
+          command: source activate sphinxenv/ && bash docs/build-docs.sh
 workflows:
   version: 2
   test:
     jobs:
       - test
+      - build-docs
