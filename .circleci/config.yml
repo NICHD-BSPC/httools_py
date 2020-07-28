@@ -10,11 +10,12 @@ jobs:
       - run:
           name: install requirements
           command: |
-            conda env create -p httoolsenv --file requirements-linux.yaml && \
-            source activate httoolsenv/
+            conda env create -p httoolsenv --file requirements-linux.yaml
       - run:
           name: run test
-          command: bash test_snakemake.sh
+          command: |
+            conda activate httoolsenv/ && \
+            bash test_snakemake.sh
 workflows:
   version: 2
   test:
