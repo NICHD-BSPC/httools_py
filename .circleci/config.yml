@@ -36,7 +36,7 @@ jobs:
           name: Build and upload docs
           command: |
             source activate sphinxenv/ && \
-            conda install sphinx -y \
+            conda install sphinx -y && \
             bash docs/build-docs.sh
 workflows:
   version: 2
