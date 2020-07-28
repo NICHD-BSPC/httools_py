@@ -10,7 +10,7 @@ jobs:
       - run:
           name: install requirements
           command: |
-            conda env create -y -p httoolsenv --file requirements-linux.yaml && \
+            conda env create -p httoolsenv --file requirements-linux.yaml && \
             source activate httoolsenv
       - run:
           name: run test
