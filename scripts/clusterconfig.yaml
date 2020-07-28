@@ -1,0 +1,8 @@
+__default__:
+  prefix: "--gres=lscratch:20 --time=4:00:00 --partition=quick"
+
+fastqscreen:
+  prefix: "--time=8:00:00 --mem=16g"
+
+location:
+  prefix: "--time=8:00:00"

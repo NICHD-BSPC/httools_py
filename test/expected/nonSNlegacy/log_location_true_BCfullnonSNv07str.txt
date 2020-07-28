@@ -1,0 +1,9 @@
+total integraion:	1137	1304
+upstream:	934	1064
+downstream:	174	207
+in ORF:	29	33
+close to start:	16	19
+close to end:	13	14
+tandem:	446	514
+divergent:	624	716
+convergent:	35	38

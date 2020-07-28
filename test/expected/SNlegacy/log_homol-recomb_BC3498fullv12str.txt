@@ -1,0 +1,2 @@
+test/expected/SN/integration_BC3498fullv12str.txt	Number true integration	Number solo-LTR	Number Tf2-5LTR	Number Tf2-3LTR
+594	2	0	0

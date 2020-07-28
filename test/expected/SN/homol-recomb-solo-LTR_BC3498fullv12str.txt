@@ -1,0 +1,3 @@
+Id	chr	position	strand	indpt	dupl
+SSP_chr2_2426337_+	chr2	2426337	+	1	1
+SSP_chr2_4437847_+	chr2	4437847	+	1	1

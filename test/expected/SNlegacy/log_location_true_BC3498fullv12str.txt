@@ -1,0 +1,9 @@
+total:	594	668	1249
+upstream:	488	545	1038
+downstream:	77	92	166
+in ORF:	29	31	45
+close to start:	14	24	25
+close to end:	15	7	20
+tandem:	232	256	394
+divergent:	319	363	786
+convergent:	13	17	23

@@ -1,0 +1,21 @@
+version: 2
+
+jobs:
+  test:
+    docker:
+      - image: continuumio/miniconda3:latest
+
+    steps:
+      - checkout
+      - run:
+          name: install requirements
+          command: conda env create -y -p env --file requirements-linux.yaml && \
+                   conda activate env/
+      - run:
+          name: run test
+          command: bash test_snakemake.sh
+workflows:
+  version: 2
+  test:
+    jobs:
+      - test

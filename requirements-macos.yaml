@@ -1,0 +1,26 @@
+channels:
+  - defaults
+  - conda-forge
+  - r
+  - bioconda
+dependencies:
+  - biopython
+  - pandas
+    #  - ipython
+  - ruamel.yaml 
+  - blast = 2.9.0
+  - pandoc
+  - pybedtools
+  - r-base = 3.5.1
+  - r-tibble
+  - r-dt
+  - r-ggplot2
+  - r-stringi
+  - r-heatmaply
+  - r-kernsmooth
+  - r-rmarkdown
+  - r-tidyverse
+  - r-tidyr >= 1.0.0
+  - r-plotly
+  - r-tidyselect
+  - snakemake-minimal>=5.15.0,<5.18

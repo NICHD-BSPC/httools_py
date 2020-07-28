@@ -1,0 +1,167 @@
+# -----------------------------------------------------------
+# Modify those parameters to match the samples 
+# -----------------------------------------------------------
+
+
+# NOTE: this config file is in the YAML format, which does not allow the use of tabs.
+# Two spaces are used instead for each indentation.
+
+
+# Experiment name:
+name: test_fullfastq
+
+
+# Indicate here the path(s) to the fastq(s), relative to the config.yaml file.
+# If multiple files, indicate each file in its own line with an opening dash.
+# The paths are relative to the `start_HTtools.py` script.
+fastq:
+  - ../SRR5305121full.fastq
+
+
+# Sample blocks:
+# Copy/paste the sample block for each of the samples in the library.
+# Each block indicates:
+#   - the sample name (here BC3498)
+#   - the barcode start position
+#   - the barcode length
+#   - the expected sequence from the barcode included to the end of LTR
+#   (if the library has Serial Numbers, the SN can be indicated with Xs in the sequence.
+#   Do not use A, T, G, C or N in the SN)
+#   - integrase: whether a wild-type integrase (wt) or frameshit (fs) was used. This determines the
+#   lenght of target site duplication (tsd). Only accepted values: wt or infs
+#   - lib_design: from which end of the retrotransposon was the sequencing done?
+#   Only accepted values: U5 or U3
+#   - SN_position: position of the Serial Number. If no Serial Number, indicate 'na'
+#   - SN_length: length of Serial Number. If no Serial Number, indicate 'na'
+
+
+sample:
+  # sample block ----------------------------------------------
+  BCfullnonSN:
+    barcode_start: 1
+    barcode_length: 4
+    sequence: ACGTCTCACCGCAGTTGATGCATAGGAATTTAGTTTATGGTAACTGCGTAGCTAACA
+    integrase: wt
+    lib_design: U5
+    SN_position: na
+    SN_length: na
+  # sample block ----------------------------------------------
+
+
+# Genome built:
+# Which genome built to use? Available options are:
+#   - 1: Feb. 2007; 
+#   - 2: 2012 (ASM294v2); 
+#   - 3: Feb. 2007 + donor plasmid sequence; 
+#   - 4: 2012 (ASM294v2) + donor plasmid sequence (user)
+genome: 1
+
+
+# Generate fasta file(s) of trimmed sequence reads corresponding
+# to the integration file
+# Sequences are trimmed after the end of the LTR and replicated
+# as many times as there was duplicate sequences.
+# Set to True or False
+generate_uncollapsed: True
+
+# Positions to exclude:
+# Indicate the list of position(s) to exclude, in the format
+# chromosome_coordinate_orientation, i.e. chr1_240580_-
+# Those positions will be screened out from the true_integrations
+# and saved in location/excluded/ for reference
+exclude:
+  - na
+
+
+# -----------------------------------------------------------
+# Advanced parameters
+# -----------------------------------------------------------
+
+# Those parameters do not typically need to be modified.
+# Filters against linker, ltrcircle, plasmid, primary_incomplete, 
+# second_incomplete and pbs are optional. Indicate 'na' to skip
+# those filters.
+
+legacy_mode: True
+length_to_match: 34
+min_length: 14
+allowed_mismatches: 2
+linker: TAGTCCCTTAAGCGGAG
+ltrcircle:
+  U5: TGTCAGCAATACTAGCAGCATGGCTGATACACTA
+  U3: TGTTAGCTACGCAGTTACCATAAACTAAATTCCT
+plasmid:
+  U5: GAAGTAAATGAAATAACGATCAACTTCATATCAA
+  U3: none
+primary_re:
+  U5: MseI
+  U3: MseI
+primary_incomplete:
+  U5: TTAA
+  U3: TTAA
+second_re:
+  U5: SpeI
+  U3: BspHI
+second_incomplete:
+  U5: AATTCTTTTCGAGAAAAAGGAATTATTGACTAGT
+  U3: TTACATTGCACAAGATAAAAATATATCATCATGA
+dist_to_second_incomplete:
+  U5: 28
+  U3: 22
+pbs:
+  U5: ATAACTGAACT
+  U3: TTGCCCTCCCC
+tsd:
+  wt: 5
+  infs: 0
+blastview: 6
+blastevalue: 0.05
+max_score_diff: 0.0001
+orf_map_interval: 100
+avg_orf_length: 1500
+orf_map_window: 5000
+# Paths to genome databases, preexisting LTRs and CDS coordinates
+# Please note the paths are relative to the HTtools directory.
+genomedb:
+  1: database/2007/chr123.fas
+  2: database/2012_ASM294v2/chr123.fas
+  3: database/2007_with_pHL2882/chr123pHL2882.fas
+  4: database/2012_ASM294v2_pHL2882/chr123pHL2882.fas
+genomevs:
+  1: v07str
+  2: v12str
+  3: v07pHL
+  4: v12pHL
+preexist_ltr:
+  U5:
+    ltr5: database/LTR_2012_ASM294v2/Tf2_5_LTR.txt
+    ltr3: database/LTR_2012_ASM294v2/Tf2_3_LTR.txt
+    sololtr: database/LTR_2012_ASM294v2/solo_LTR.txt
+  U3:
+    ltr5: database/LTR_2012_ASM294v2/Tf2_5_LTR-U3.txt
+    ltr3: database/LTR_2012_ASM294v2/Tf2_3_LTR-U3.txt
+    sololtr: database/LTR_2012_ASM294v2/solo_LTR-U3.txt
+genomecds:
+  1: database/2007/cds.txt
+  2: database/2012_ASM294v2/cds.txt
+  3: database/2007_with_pHL2882/cds.txt
+  4: database/2012_ASM294v2_pHL2882/cds.txt
+
+# List of chromosomes of interest
+# The integration log file will give for information purpose the count within each chromosome 
+# in the reference genome, but only the chromosomes from the list below will be included 
+# in the output files integration, intergenic, ORF, location, ORFmap, logoDNA
+chro_listvs:
+  1: short_chro_list
+  2: full_chro_list
+  3: short_chro_list
+  4: full_chro_list
+full_chro_list:
+  - chr1
+  - chr2
+  - chr3
+  - AB325691
+short_chro_list:
+  - chr1
+  - chr2
+  - chr3

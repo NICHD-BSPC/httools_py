@@ -1,0 +1,8 @@
+total seq: 	1442
+start>1: 	94
+high e value:	
+good match seq: 	1348
+lines: 	5192
+filter multi-match lines: 	1227
+integrations (exclude mitochondria): 	1138
+multimapper integration positions (exclude mitochondria): 	1618

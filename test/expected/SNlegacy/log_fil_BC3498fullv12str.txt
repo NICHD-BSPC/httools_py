@@ -1,0 +1,13 @@
+total seq: 	979
+start>1: 	120
+high e value:	
+good match seq: 	859
+lines: 	3444
+filter multi-match lines: 	753
+SSP:	595
+independents: 	670
+duplicates: 	1251
+SSP multimappers:	1312
+independents multimappers: 	1833
+duplicates multimappers: 	2560
+NOTE: Multimappers insertion numbers (SSP, independent and duplicates) are to be taken with care. Those numbers reflect the each potential insertion site for each sequence read.
