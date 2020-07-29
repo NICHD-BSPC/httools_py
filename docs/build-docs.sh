@@ -22,7 +22,7 @@ GITHUB_USERNAME="NICHD-BSPC"
 
 # DOCSOURCE is directory containing the Makefile, relative to the directory
 # containing this bash script.
-DOCSOURCE=`pwd`
+DOCSOURCE=`pwd`/docs
 
 # DOCHTML is where sphinx is configured to save the output HTML
 DOCHTML=$DOCSOURCE/build/html
