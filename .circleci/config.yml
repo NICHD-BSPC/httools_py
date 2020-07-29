@@ -37,7 +37,7 @@ jobs:
             - $CIRCLECI_KEY
       - run:
           name: Build and upload docs
-          command: source activate sphinxenv/ && bash docs/build-docs.sh
+          command: source activate sphinxenv/ && conda list && bash docs/build-docs.sh
 workflows:
   version: 2
   test:
