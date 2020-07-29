@@ -1,4 +1,0 @@
-Raw sequences: 10000
-Reads without barcode: 0
-Name	Barcode start	Barcode length	SN start	SN length	Transposon end	With barcode	Nonspecific	plasmid	SpeI incomplete	LTRcircle	MseI incomplete	With LTR	With linker	Short	Good sequences	Exclude dup	Exclude SN	dup	PBS events Good sequences	PBS events Exclude dup	PBS events Exclude SN	PBS events dups
-BCfullnonSN	1	4	na	na	ACGTCTCACCGCAGTTGATGCATAGGAATTTAGTTTATGGTAACTGCGTAGCTAACA	10000	5665	0	1225	0	50	3060	1969	692	1934	1831	na	103	434	na	291	143

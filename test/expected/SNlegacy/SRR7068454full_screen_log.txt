@@ -1,5 +1,0 @@
-Raw sequences: 9999
-Reads without barcode: 933,  reads
-Name	Barcode start	Barcode length	SN start	SN length	Beginning seq	With barcode	Nonspecific	plasmid	LTRcircle	SpeI incomplete	MseI incomplete	With LTR	With linker	Short	Good sequences	Exclude SN	PBS events Good sequences	PBS events Exclude SN
-BC3498full	1	4	28	8	CTCACCGCAGTTGATGCATAGGAAGCCxxxxxxxxCAAACTGCGTAGCTAACA	9033	5011			51	30	3941	1879	459	1963	1302	1519	452	
-BC3512full	1	4	28	8	GTCACCGCAGTTGATGCATAGGAAGCCxxxxxxxxCAAACTGCGTAGCTAACA	33	29					4	1		1	1	3	3	

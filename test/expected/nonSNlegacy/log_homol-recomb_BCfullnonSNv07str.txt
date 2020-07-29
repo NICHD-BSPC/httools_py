@@ -1,2 +1,0 @@
-test/expected/nonSN/integration_BCfullnonSNv07str.txt	Number true integration	Number solo-LTR	Number Tf2-5LTR	Number Tf2-3LTR
-1137	2	0	0
