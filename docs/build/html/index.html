@@ -1,0 +1,469 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentation</title>
+    <link rel="stylesheet" href="_static/better.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+  
+
+
+  <link href="https://fonts.googleapis.com/css?family=Lato|Lora|Oswald&display=swap" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+      <link rel="stylesheet" href="_static/style.css" type="text/css" />
+  
+  
+  <style type="text/css">
+    ul.ablog-archive {list-style: none; overflow: auto; margin-left: 0px}
+    ul.ablog-archive li {float: left; margin-right: 5px; font-size: 80%}
+    ul.postlist a {font-style: italic;}
+    ul.postlist-style-disc {list-style-type: disc;}
+    ul.postlist-style-none {list-style-type: none;}
+    ul.postlist-style-circle {list-style-type: circle;}
+  </style>
+
+  </head><body>
+    <header id="pageheader"><h1><a href="# ">
+        
+    </a></h1></header>
+  <div class="related top">
+  <nav id="rellinks">
+    <ul>
+    </ul>
+  </nav>
+  <nav id="breadcrumbs">
+    <ul>
+      <li><a href="#">Home</a></li> 
+    </ul>
+  </nav>
+  </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="documentation">
+<h1>Documentation<a class="headerlink" href="#documentation" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="httools">
+<h2>HTtools<a class="headerlink" href="#httools" title="Permalink to this headline">¶</a></h2>
+<p>HTtools maps and quantifies retrotransposon integrations.
+Sequence reads matching the end of the retrotransposon LTR are trimmed
+of the LTR end and screened against sequences indicating non
+integration-specific fragments (PBS sequence, LTR-circle, donor plasmid,
+retrotransposon internal sequences and restriction enzyme recognition
+site). Reads are then mapped to genome and sorted according
+to uniquely mapped, mapping to multiple positions and mapping to
+homologous recombination sites. Uniquely mapped reads are positionned
+relative to ORF.</p>
+<p>The full processing pipeline is included in a Snakefile and can be
+configured using a config yaml file. Upon success, an html summary file
+is generated. It contains interactive graphs of integration genomic
+distribution, ORF-maps, heatmap of the most targeted regions and links
+to the output TSV files.</p>
+<p>Modification of the config.yaml file and rerun of the pipeline will only
+trigger the rerun of affected rules.</p>
+<p>Each individual step scripts can also be run independently by command
+line.</p>
+<p><em>S. pombe</em> genome references and parameters are included in HTtools by
+default. Other genomes can be added to the <code class="docutils literal notranslate"><span class="pre">database</span></code> directory and specifying
+the paths in the config.yaml file.</p>
+<p>Four versions of <em>S. pombe</em> genome are currently included:</p>
+<ul class="simple">
+<li><p>2008 release</p></li>
+<li><p>2012 release</p></li>
+<li><p>2008 release plus the sequence of the expression plasmid pHL2882</p></li>
+<li><p>2012 release plus the sequence of the expression plasmid pHL2882</p></li>
+</ul>
+<p>Experimental setups with and without Serial Number are supported, as
+well as integrase-frameshift and native integrase.</p>
+<p>Parameters that are typical of the Tf1 retrotransposon are used in the
+<code class="docutils literal notranslate"><span class="pre">test/config/config_*.yaml</span></code> configuration files.</p>
+<div class="section" id="software-installation">
+<h3>Software installation<a class="headerlink" href="#software-installation" title="Permalink to this headline">¶</a></h3>
+<p>Installation of all dependencies is handled by conda, ensuring
+reproducibility, streamlined setup, and no need for root administrator
+privileges.</p>
+<p>Use <a class="reference external" href="https://bioconda.github.io/">bioconda</a> to automatically install
+software into the working directory without needing admin rights on the
+machine.</p>
+<p>If you have the Anaconda Python distribution, you already have conda.
+Otherwise, install <a class="reference external" href="https://conda.io/miniconda.html">Miniconda</a>.</p>
+<div class="section" id="creating-a-new-conda-environment">
+<h4>1. Creating a new conda environment<a class="headerlink" href="#creating-a-new-conda-environment" title="Permalink to this headline">¶</a></h4>
+<p>Create a top-level environment with the workflow requirements in the
+HTtools directory. It needs to be activated any time you’ll be working
+with this workflow. It is recommended to use the <code class="docutils literal notranslate"><span class="pre">-p</span></code> option to create
+the environment in the current directory. This makes it easier to track
+the environment used for each project.</p>
+<p>Navigate to your HTtools directory.</p>
+<p>If you are on Linux, create the environment:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="n">env</span> <span class="n">create</span> <span class="o">-</span><span class="n">p</span> <span class="n">env</span><span class="o">/</span> <span class="o">--</span><span class="n">file</span> <span class="n">requirements</span><span class="o">-</span><span class="n">linux</span><span class="o">.</span><span class="n">yaml</span>
+</pre></div>
+</div>
+<p>If you are on macOS, create the environment:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="n">env</span> <span class="n">create</span> <span class="o">-</span><span class="n">p</span> <span class="n">env</span><span class="o">/</span> <span class="o">--</span><span class="n">file</span> <span class="n">requirements</span><span class="o">-</span><span class="n">macos</span><span class="o">.</span><span class="n">yaml</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="activating-the-environment">
+<h4>2. Activating the environment<a class="headerlink" href="#activating-the-environment" title="Permalink to this headline">¶</a></h4>
+<p>Navigate to your HTtools directory and activate with:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="n">activate</span> <span class="n">env</span><span class="o">/</span>
+</pre></div>
+</div>
+<p>Eventually when you’re done, you can “deactivate”, which removes the
+environment location from your $PATH until the next time you activate
+it.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="n">deactivate</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="running-the-tests">
+<h4>3. Running the tests<a class="headerlink" href="#running-the-tests" title="Permalink to this headline">¶</a></h4>
+<p>The shell script test_snakemake.sh will run HTtools on Serial Number and
+non Serial Number test datasets, and compare the output files to the
+expected outputs. This ensure reproducibility by verifying that the
+current tools and packages versions are giving the expected results.
+This needs to be done only once after installation.</p>
+<p>Note: if you are running on Biowulf, run this in an interactive session.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">bash</span> <span class="n">test_snakemake</span><span class="o">.</span><span class="n">sh</span>
+</pre></div>
+</div>
+<p>If everything went fine, the following message will be displayed</p>
+<blockquote>
+<div><p>Test passed successfully</p>
+</div></blockquote>
+<p>If the results generated in the current environment differ from the
+expected results, the following error message will be displayed</p>
+<blockquote>
+<div><p>Error(s) found, see test/diff-test-screen-full.log</p>
+</div></blockquote>
+<p>Contact the Bioinformatics core for assistance.</p>
+</div>
+</div>
+<div class="section" id="configuring-the-workflow">
+<h3>Configuring the workflow<a class="headerlink" href="#configuring-the-workflow" title="Permalink to this headline">¶</a></h3>
+<p>All sample information and workflow configurations are indicated in the
+config.yaml file.</p>
+<p>The following fields need to be adjusted to individual runs:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">name</span></code> experiment name. Should be unique since all results will be
+stored in a directory labelled with that name</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">fastq</span></code> list of path(s) to the fastq file(s). Path(s) can be either
+absolute or relative to the config file. Can be a .gz file</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">sample</span></code> block: The sample block must be copied for each sample in
+the fastq files (typically for each barcode). It must start with a
+unique name and contains the fields:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">barcode_start</span></code> position in the sequence reads where the barcode
+starts</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">barcode_length</span></code> lenght of the barcode in nulceotides</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">sequence</span></code> expected sequence, from the barcode (included) to the
+end of the LTR. Note: if a Serial Number is included, it must be
+indicated with <code class="docutils literal notranslate"><span class="pre">x</span></code>s</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">integrase</span></code> whether the integrase was native (<code class="docutils literal notranslate"><span class="pre">wt</span></code>) or
+frameshift (<code class="docutils literal notranslate"><span class="pre">fs</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">lib_design</span></code> whether the sequence reads originate from the
+<code class="docutils literal notranslate"><span class="pre">U5</span></code> or the <code class="docutils literal notranslate"><span class="pre">U3</span></code> end of the retrotransposon</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">SN_position</span></code> (optional) start position of the Serial Number,
+indicate ‘na’ if no SN was used</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">SN_length</span></code> (optional) length of the Serial Number, indicate
+‘na’ if no SN was used</p></li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">genome</span></code> genome built. Current available options are:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">1</span></code>: 2008 release</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">2</span></code>: 2012 release</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">3</span></code>: 2008 release plus the sequence of the expression plasmid
+pHL2882</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">4</span></code>: 2012 release plus the sequence of the expression plasmid
+pHL2882</p></li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">generate_uncollapsed</span></code> whether to output (<code class="docutils literal notranslate"><span class="pre">True</span></code>) or not
+(<code class="docutils literal notranslate"><span class="pre">False</span></code>) fastas of trimmed sequence reads corresponding to the
+integration files. Sequences are trimmed after the end of the LTR and
+are replicated as many times as there were duplicate sequence reads.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">exclude</span></code>  positions to exclude, in the format
+chromosome_coordinate_orientation, i.e. <a href="#id2"><span class="problematic" id="id3">chr1_240580_</span></a>-</p>
+<p>Those positions will be screened out from the true_integrations
+and written in <code class="docutils literal notranslate"><span class="pre">data/{name}/location/excluded/</span></code> for reference.</p>
+<p>Indicate ‘na’ if no position to exclude</p>
+</li>
+</ul>
+<p>Advanced parameters include legacy_mode, reference sequences used for
+screening, blast parameters, and are also specified in the config.yaml
+file. Those parameters do not typically need to be modified. See the
+exemple files <code class="docutils literal notranslate"><span class="pre">test/config/config_nonSN.yaml</span></code> and
+<code class="docutils literal notranslate"><span class="pre">test/config/config_SN.yaml</span></code> for details.</p>
+</div>
+<div class="section" id="running-the-workflow">
+<h3>Running the workflow<a class="headerlink" href="#running-the-workflow" title="Permalink to this headline">¶</a></h3>
+<p>The workflow performs the following tasks:</p>
+<ul class="simple">
+<li><p>screening of fastq files for non specific sequence reads</p></li>
+<li><p>mapping of the screened reads to the reference genome using <code class="docutils literal notranslate"><span class="pre">blast</span></code></p></li>
+<li><p>filtering of the blast results for uniquely mapped reads</p></li>
+<li><p>positioning of the insertions relative to ORFs and quantification</p></li>
+<li><p>plotting of results and creation of summary html file</p></li>
+<li><p>(optional) creation of fasta files containing reads that correspond
+to the integration files</p></li>
+</ul>
+<p>With the environment activated, navigate to the <code class="docutils literal notranslate"><span class="pre">httools_py</span></code> directory
+and run the workflow:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">bash</span> <span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">start_HTtools</span><span class="o">.</span><span class="n">sh</span> <span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">config</span><span class="o">.</span><span class="n">yaml</span>
+</pre></div>
+</div>
+<p>For exemple, from the HTtools directory, with a config file called
+<code class="docutils literal notranslate"><span class="pre">config_nonSN.yaml</span></code> and located in HTtools test/config directory:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">bash</span> <span class="n">start_HTtools</span><span class="o">.</span><span class="n">sh</span> <span class="n">test</span><span class="o">/</span><span class="n">config</span><span class="o">/</span><span class="n">config_nonSN</span><span class="o">.</span><span class="n">yaml</span>
+</pre></div>
+</div>
+<p>The config.yaml file is a required argument.</p>
+<p>Upon success, results can be found in your config.yaml file directory
+under <code class="docutils literal notranslate"><span class="pre">data/{name}</span></code> where <code class="docutils literal notranslate"><span class="pre">name</span></code> is the experiment name provided in
+the config.yaml file. See section <span class="xref std std-ref">Output files of interest</span>
+for details.</p>
+<p>An error is raised and the workflow is aborted when a sample does not return any read.
+This is generally due to an error in the sequences specified in the <code class="docutils literal notranslate"><span class="pre">config.yaml</span></code> file.
+A modified fastqscreen log file <code class="docutils literal notranslate"><span class="pre">data/logs/fastq_screen_{name}_{sample}.error.txt</span></code> is generated and contains
+the number of reads passing / blocked by each of the sequence filters for debugging.</p>
+<p>The workflow is set up to automatically run up to 4 parallel jobs on
+Biowulf HPC. Adjust <code class="docutils literal notranslate"><span class="pre">start_HTtools.sh</span></code> to your <cite>$HOSTNAME</cite> if you are running on a different HPC.
+When running parallel jobs, the error messages are not indicated within the <code class="docutils literal notranslate"><span class="pre">Snakefile.log</span></code>
+file but can rather be found in <code class="docutils literal notranslate"><span class="pre">logs/{rule.name}.{jobID}.e</span></code>.</p>
+</div>
+<div class="section" id="running-individual-scripts">
+<h3>Running individual scripts<a class="headerlink" href="#running-individual-scripts" title="Permalink to this headline">¶</a></h3>
+<p>Alternatively, scripts for the individual steps can be run
+independently. See individual scripts code for usage.</p>
+<p>This can be useful for exemple to position the multimatch integrations
+relative to ORFs. In this exemple, an multimatch integration file is
+processed through the location step. From the HTtools directory:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">scripts</span><span class="o">/</span><span class="n">location</span><span class="o">.</span><span class="n">py</span> <span class="o">--</span><span class="n">integration</span> <span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">data</span><span class="o">/</span><span class="p">{</span><span class="n">name</span><span class="p">}</span><span class="o">/</span><span class="n">filterblast</span><span class="o">/</span><span class="n">integration_multimatch_file</span><span class="o">.</span><span class="n">txt</span>
+<span class="o">--</span><span class="n">config</span> <span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">config</span><span class="o">.</span><span class="n">yaml</span>
+</pre></div>
+</div>
+<p>then the output
+<code class="docutils literal notranslate"><span class="pre">path/to/data/{name}/location/location_multimatch_file.txt</span></code> can be
+processed through the ORFmap step. From the HTtools directory:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">R</span> <span class="o">-</span><span class="n">e</span> <span class="s2">&quot;rmarkdown::render(&#39;scripts/results.Rmd&#39;,output_file=&#39;../wanted/path/to/results.html&#39;, params=list(configfn=&#39;../path/to/config.yaml&#39;))&quot;</span>
+</pre></div>
+</div>
+<p>(please note the <code class="docutils literal notranslate"><span class="pre">../</span></code> in the output and params arguments, the paths
+must be relative to the results.Rmd file)</p>
+</div>
+<div class="section" id="output-files-of-interest">
+<h3>Output files of interest<a class="headerlink" href="#output-files-of-interest" title="Permalink to this headline">¶</a></h3>
+<p>Output files of interest:</p>
+<ol class="arabic simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">data/{sample}/results.html</span></code>: summary report containing interactive figures and links to all
+result files.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">data/{name}/filterblast/integration_{sample}.txt</span></code>: contains the list of integration positions
+with the number of associated sequence reads. If the experiment set
+up includes Serial Number, the last 2 columns indicate the number of
+independent integration events and the number of sequence reads
+respectively.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">data/{name}/location/true_integration_{sample}.txt</span></code>: integrations minus the positions matching
+homologous recombination sites and optionnaly the positions to exclude.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">data/{name}/location/homol-recomb_{sample}.txt</span></code>: potential homologous recombination events
+filtered out from integration_{sample}.txt</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">data/{name}/location/ORF_{sample}.txt</span></code>: lists the ORFs and the corresponding number of
+integrations.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">data/{name}/location/intergenic_{sample}.txt</span></code>: lists the intergenic regions and the
+corresponding number of integrations.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">data/{name}/location/location_{sample}.txt</span></code>: integration positions with assignment to ORF
+or intergenic region.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">data/{name}/ORFmap/ORFmap_{sample}.txt</span></code>: table summarizing the % of integration within
+intervals upstream, downstream and within ORFs.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">data/{name}/logs/log_*.txt</span></code>: summary of sequence read and integration numbers.</p></li>
+</ol>
+</div>
+<div class="section" id="legacy-mode-changes">
+<h3>legacy_mode changes<a class="headerlink" href="#legacy-mode-changes" title="Permalink to this headline">¶</a></h3>
+<p>When <code class="docutils literal notranslate"><span class="pre">legacy_mode</span></code> is set to <code class="docutils literal notranslate"><span class="pre">True</span></code> in the config.yaml, the pipeline
+follows the behavior of the original perl scripts.</p>
+<div class="section" id="fastqscreen">
+<h4>fastqscreen<a class="headerlink" href="#fastqscreen" title="Permalink to this headline">¶</a></h4>
+<p>The perl scripts <code class="docutils literal notranslate"><span class="pre">screen_illumina_Tf1_sequence-1.0.pl</span></code> and
+<code class="docutils literal notranslate"><span class="pre">screen_illumina_Tf1_SN_sequence-2.0.pl</span></code> screened out sequences with
+&gt;= 2 mismatches to end of LTR, or non-specific sequences. This should
+have been &gt; 2 to allow up to 2 mismatches. <code class="docutils literal notranslate"><span class="pre">legacy_mode=False</span></code> allows
+up to 2 mismatches.</p>
+</div>
+<div class="section" id="filblast">
+<h4>filblast<a class="headerlink" href="#filblast" title="Permalink to this headline">¶</a></h4>
+<p>To determine whether the read is multimapped or uniquely mapped, the
+perl version compares all the matches, and assign to multi only if all
+the matches are within the threshold. It seems more appropriate to at
+first only looks at the top 2. If the best match is within the evalue
+threshold of the second best, then assign to multimatch any sequence
+within the threshold of the top match. <code class="docutils literal notranslate"><span class="pre">legacy_mode=False</span></code> follows the
+later.</p>
+</div>
+<div class="section" id="location">
+<h4>location<a class="headerlink" href="#location" title="Permalink to this headline">¶</a></h4>
+<p>The upstream distances to nearest ORF were off by 6 nucleotides in the
+perl scripts. Distances to downstream were correct.
+<code class="docutils literal notranslate"><span class="pre">legacy_mode=False</span></code> fixes this issue.</p>
+</div>
+<div class="section" id="orfmap">
+<h4>ORFmap<a class="headerlink" href="#orfmap" title="Permalink to this headline">¶</a></h4>
+<p>The perl script <code class="docutils literal notranslate"><span class="pre">ORF_map_v2-nonSN.pl</span></code> was counting the header line as
+an integration SSP, thus increasing the total number of SSP by 1. Fixed
+with <code class="docutils literal notranslate"><span class="pre">legacy_mode=False</span></code>.</p>
+</div>
+</div>
+<div class="section" id="notes">
+<h3>Notes<a class="headerlink" href="#notes" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="fastqscreen-1">
+<span id="id1"></span><h4>fastqscreen<a class="headerlink" href="#fastqscreen-1" title="Permalink to this headline">¶</a></h4>
+<p>The sequences characteristic of SpeI incomplete are located ~70 bp from
+the begining of the sequence reads. The SpeI incomplete sequence would
+partially fall outside of the sequence read when the sequencing length
+was 100bp. Longer reads (150bp) are prefered for this reason, although
+the 100bp still allow SpeI incomplete correct assignment in most cases.</p>
+<p>Sequence distances calculations are using different packages between
+perl and python scripts. Out of 10,000 reads, tests showed 100% of
+identical assignment between the original perl script and the updated
+python version for non SN reads. 0.01% reads were assigned to SpeI
+incomplete in in python but not in perl out of 10,000 reads with SN
+(100bp reads).</p>
+<p>The filtering was sequential in the perl version, and was processed
+slightly differently between the SN and non SN version. I.e. SpeI
+incomplete is only counted if the sequence was neither categorized as
+plasmid, nor ltrcircle in the SN version. The non SN version counts any
+SpeI incomplete. This may change the numbers within the filtering
+categories but does not affect whether a read is filtered out. This
+behavior is conserved in python when <code class="docutils literal notranslate"><span class="pre">legacy_mode=False</span></code>.</p>
+</div>
+</div>
+<div class="section" id="change-log">
+<h3>Change log<a class="headerlink" href="#change-log" title="Permalink to this headline">¶</a></h3>
+<p>2020-07-14</p>
+<ul class="simple">
+<li><p>Added capability to run jobs in parallel on HPC</p></li>
+<li><p>Screen out a list of positions to exclude</p></li>
+<li><p>Plot correlation heatmaps</p></li>
+</ul>
+<p>2020-06-29</p>
+<ul class="simple">
+<li><p>Full rewrite in python</p></li>
+<li><p>Added a results summary html output</p></li>
+<li><p>Added interactive heat maps of the most targeted intergenic regions
+and most targeted ORFs</p></li>
+</ul>
+<p>2019-10-17</p>
+<ul class="simple">
+<li><p>Version httools.2.0</p></li>
+<li><p>Fix for U3 workflow the ‘BspHI incomplete screen’, orientation of
+integration, recombination events coordinates, and removed the
+‘plasmid’ screen</p></li>
+<li><p>Added workflows for integrase-independent experiments (IN-indpt) for
+U5 and U3</p></li>
+<li><p>Filter out sequence reads matching LTR circles</p></li>
+<li><p>Screen out multimatch insertions based on blast e-values rather than
+blast bit scores</p></li>
+</ul>
+<p>2019-08-07</p>
+<ul class="simple">
+<li><p>Added screen from U3 transposon end</p></li>
+<li><p>Allowing compressed fastq.gz as input file</p></li>
+</ul>
+</div>
+</div>
+</div>
+
+  <div class="section">
+  
+  
+  </div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="#">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Documentation</a><ul>
+<li><a class="reference internal" href="#httools">HTtools</a><ul>
+<li><a class="reference internal" href="#software-installation">Software installation</a><ul>
+<li><a class="reference internal" href="#creating-a-new-conda-environment">1. Creating a new conda environment</a></li>
+<li><a class="reference internal" href="#activating-the-environment">2. Activating the environment</a></li>
+<li><a class="reference internal" href="#running-the-tests">3. Running the tests</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#configuring-the-workflow">Configuring the workflow</a></li>
+<li><a class="reference internal" href="#running-the-workflow">Running the workflow</a></li>
+<li><a class="reference internal" href="#running-individual-scripts">Running individual scripts</a></li>
+<li><a class="reference internal" href="#output-files-of-interest">Output files of interest</a></li>
+<li><a class="reference internal" href="#legacy-mode-changes">legacy_mode changes</a><ul>
+<li><a class="reference internal" href="#fastqscreen">fastqscreen</a></li>
+<li><a class="reference internal" href="#filblast">filblast</a></li>
+<li><a class="reference internal" href="#location">location</a></li>
+<li><a class="reference internal" href="#orfmap">ORFmap</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#notes">Notes</a><ul>
+<li><a class="reference internal" href="#fastqscreen-1">fastqscreen</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#change-log">Change log</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/index.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<form class="search" action="search.html" method="get">
+  <input type="text" name="q"
+   placeholder="type to search" />
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+  <div class="related bottom">
+  <nav id="rellinks">
+    <ul>
+    </ul>
+  </nav>
+  <nav id="breadcrumbs">
+    <ul>
+      <li><a href="#">Home</a></li> 
+    </ul>
+  </nav>
+  </div>
+  <footer id="pagefooter">&copy; 2019, Ryan Dale.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a>
+      3.1.2.
+
+  </footer>
+
+  
+  </body>
+</html>
