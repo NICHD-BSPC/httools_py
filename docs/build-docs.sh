@@ -74,7 +74,7 @@ if git diff --quiet; then
     exit 0
 fi
 
-if [[ $CIRCLE_BRANCH != master ]]; then
+if [[ $CIRCLE_BRANCH != docs ]]; then
     echo "Not pushing docs because not on branch '$BUILD_DOCS_FROM_BRANCH'"
     exit 0
 fi
