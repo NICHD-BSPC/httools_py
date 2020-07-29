@@ -22,7 +22,7 @@ GITHUB_USERNAME="NICHD-BSPC"
 
 # DOCSOURCE is directory containing the Makefile, relative to the directory
 # containing this bash script.
-DOCSOURCE=`pwd`/
+DOCSOURCE=`pwd`
 
 # DOCHTML is where sphinx is configured to save the output HTML
 DOCHTML=$DOCSOURCE/build/html
@@ -59,6 +59,7 @@ rm -r *
 
 # build docs and copy over to tmpdir
 cd ${DOCSOURCE}
+pwd
 make clean html SPHINXOPTS="-j2" 2>&1 | grep -v "WARNING: nonlocal image URL found:"
 cp -r ${DOCHTML}/* $STAGING
 
