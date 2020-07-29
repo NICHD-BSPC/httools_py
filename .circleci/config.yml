@@ -27,6 +27,9 @@ jobs:
           name: install requirements
           command: conda env create -p sphinxenv --file docs/requirements-docs.yaml
       - run:
+          name: install sphinx
+          command: conda install sphinx -y
+      - run:
           name: OK for unknown github host
           command: mkdir -p ~/.ssh/ && echo -e "Host github.com\n\tStrictHostKeyChecking no\n" > ~/.ssh/config
       - add_ssh_keys:
@@ -34,10 +37,7 @@ jobs:
             - $CIRCLECI_KEY
       - run:
           name: Build and upload docs
-          command: |
-            source activate sphinxenv/ && \
-            conda install sphinx -y && \
-            bash docs/build-docs.sh
+          command: source activate sphinxenv/ && docs/build-docs.sh
 workflows:
   version: 2
   test:
