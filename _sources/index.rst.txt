@@ -47,6 +47,20 @@ well as integrase-frameshift and native integrase.
 Parameters that are typical of the Tf1 retrotransposon are used in the
 ``test/config/config_*.yaml`` configuration files.
 
+
+HTtools Github repository
+-----------------------------
+
+The Github repository can be found at https://github.com/NICHD-BSPC/httools_py.
+
+Either download the zip file or clone the repository with ``git`` by
+navigating to the location where you want to clone HTtools and
+
+::
+
+   git clone git@github.com:NICHD-BSPC/httools_py.git
+
+
 Software installation
 ---------------------
 
