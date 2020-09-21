@@ -102,12 +102,14 @@ class ScreenFastq:
     def skipped(self, criteria):
         """ Determine whether the sequence should be filtered on the samplecfg criteria
         """
-        return 1 if criteria == 'na' else 0
+        return 1 if criteria == 'none' else 0
 
     def exactmatch(self, seq, match, start):
         """Look for exact match of 'match' within seq, starting at index 'start'-1 of seq
         """
         if len(seq) < start + len(match):
+            score = 0
+        elif len(match) == 0:
             score = 0
         else:
             score = 1 if seq[(start-1):start-1+len(match)] == match else 0
@@ -121,6 +123,8 @@ class ScreenFastq:
         """
         self.subseq = seq[start-1:(start-1+len(match))]
         if len(self.subseq) < len(match):
+            score = 0
+        elif len(match) == 0:
             score = 0
         else:
             score = 1 if pairwise2.align.localxd(self.subseq, match, -1,-1,0,0, score_only=True) \
@@ -136,6 +140,8 @@ class ScreenFastq:
         self.match1 = match[0:sn_position-start]
         self.match2 = match[sn_position-start+sn_length:]
         if len(self.subseq1)+len(self.subseq2)+sn_length < len(match):
+            score = 0
+        elif len(match) == 0:
             score = 0
         else:
             self.score1 = pairwise2.align.localxd(self.subseq1, self.match1, -1,-1,0,0, score_only=True)
@@ -154,7 +160,9 @@ class ScreenFastq:
         # the region of the match, then do second alignment without gap penalty of the subseq to get
         # the score
         # only used for LTR circle, which are not many. 1st pass screen with scores only to speed things up
-        if pairwise2.align.localxs(seq, match,-1,-1, score_only=True) >= len(match) - maxmis:
+        if len(match) == 0:
+            return 0
+        elif pairwise2.align.localxs(seq, match,-1,-1, score_only=True) >= len(match) - maxmis:
             self.s, self.m, self.score, self.start, self.end = pairwise2.align.localxs(seq, match,-1,-1)[0]
             self.subseq = seq[self.start:self.end]
             if pairwise2.align.localxd(self.subseq, match, -1,-1,0,0, score_only=True):
@@ -346,8 +354,8 @@ def screen_sample(config, samplecfg, counter, mydir, logdir):
             for seqid, seq, qual in FastqGeneralIterator(fqfile):
                 nseq += 1
                 # screen seq
+                #print(nseq,'\t',seqid)
                 currentseq = ScreenFastq(seq, seqid, samplecfg)
-                #print(nseq)
                 # add to counter
                 for k in cols:
                     counterd[samplecfg.sample][k] += getattr(currentseq, k, 0)
