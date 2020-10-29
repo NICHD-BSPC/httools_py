@@ -14,4 +14,4 @@ relative to ORF.
 Documentation
 -------------
 
-Documentation can be found at http://NICHD-BSPC.github.io/httools_py.
+Documentation can be found at http://NICHD-BSPC.github.io/httools.
