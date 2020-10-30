@@ -212,7 +212,7 @@ def filter_homrecomb(samplecfg, config, fn):
     """ Parse integrations into homologous recombination, excluded and true integrations"""
     drop_cols = ['id'] if samplecfg.SN else ['id', 'indpt']
     # get positions to exclude
-    exclude = exclude_to_bed(samplecfg.exclude) if samplecfg.exclude != ['na'] else False
+    exclude = exclude_to_bed(samplecfg.exclude) if samplecfg.exclude != ['none'] else False
     # true integrations
     beds = [samplecfg.ltr5, samplecfg.ltr3, samplecfg.sololtr, exclude] if exclude \
         else [samplecfg.ltr5, samplecfg.ltr3, samplecfg.sololtr]
