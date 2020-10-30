@@ -3,7 +3,7 @@
 # -----------------------------------------------------------------
 
 # SN version legacy_mode
-snakemake -s Snakefile --config configfn='test/config/config_SN_legacy.yaml' --cores=1
+snakemake -s Snakefile --config fn='test/config/config_SN_legacy.yaml' --cores=1
 
 # step 1: filtering of fastqs
 diff -rb <( tail -n +3 test/config/data/test_fullfastqSN/logs/fastq_screen_test_fullfastqSN_log.txt) <( tail -n +3 test/expected/SNlegacy/SRR7068454full_screen_log.txt) \
@@ -56,7 +56,7 @@ fi
 # -----------------------------------------------------------------
 
 # non SN version legacy_mode
-snakemake -s Snakefile --config configfn='test/config/config_nonSN_legacy.yaml' --cores=1
+snakemake -s Snakefile --config fn='test/config/config_nonSN_legacy.yaml' --cores=1
 
 # step 1: filter fastq
 diff -rb <( tail -n +3 test/config/data/test_fullfastq/logs/fastq_screen_test_fullfastq_log.txt) <( tail -n +3 test/expected/nonSNlegacy/SRR5305121full_screen_log.txt) \
@@ -107,7 +107,7 @@ fi
 # -----------------------------------------------------------------
 
 # SN version non legacy_mode
-snakemake -s Snakefile --config configfn='test/config/config_SN.yaml' --cores=1
+snakemake -s Snakefile --config fn='test/config/config_SN.yaml' --cores=1
 
 # step 1: filtering of fastqs
 diff -rb <( tail -n +3 test/config/data/test_nonlegacySN/logs/fastq_screen_test_nonlegacySN_log.txt) <( tail -n +3 test/expected/SN/SRR7068454full_screen_log.txt) \
@@ -161,7 +161,7 @@ fi
 
 
 # non SN version non legacy_mode
-snakemake -s Snakefile --config configfn='test/config/config_nonSN.yaml' --cores=1
+snakemake -s Snakefile --config fn='test/config/config_nonSN.yaml' --cores=1
 
 # step 1: filter fastq
 diff -rb <( tail -n +3 test/config/data/test_nonlegacy/logs/fastq_screen_test_nonlegacy_log.txt) <( tail -n +3 test/expected/nonSN/SRR5305121full_screen_log.txt) \

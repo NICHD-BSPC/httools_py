@@ -17,7 +17,7 @@ if [[ ! -e logs ]]; then mkdir -p logs; fi
 (
     time snakemake \
     -s Snakefile \
-    -R `snakemake -s Snakefile --config configfn=$1 --list-params-changes` \
+    -R `snakemake -s Snakefile --config fn=$1 --list-params-changes` \
     -p \
     --directory $PWD \
     -k \
@@ -28,7 +28,7 @@ if [[ ! -e logs ]]; then mkdir -p logs; fi
     --verbose \
     --cluster 'sbatch {cluster.prefix} --cpus-per-task={threads}  --output=logs/{rule}.o.%j --error=logs/{rule}.e.%j' \
     --use-conda \
-    --config configfn=$1 \
+    --config fn=$1 \
     --latency-wait=300 \
     ) > "Snakefile.log" 2>&1
 

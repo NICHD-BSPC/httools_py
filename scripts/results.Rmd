@@ -7,7 +7,7 @@ output:
         toc_float: true
         toc_depth: 3
 params:
-        configfn: '../test/config/config_SN.yaml'
+        fn: '../test/config/config_SN.yaml'
         location: NULL
 ---
 
@@ -52,9 +52,8 @@ subchunkify <- function(g) {
 ```
 
 ```{r data_setup}
-#configfn <- 'test/config_full_large_SN.yaml'
-config <- read_yaml(params$configfn)
-respath <- dirname(params$configfn)
+config <- read_yaml(params$fn)
+respath <- dirname(params$fn)
 mydir <- paste0(respath, '/data/', config[['name']])
 dir.create(paste0(mydir, '/ORFmap'), showWarnings=FALSE)
 dir.create(paste0(mydir, '/heatmap'), showWarnings=FALSE)

@@ -6,10 +6,10 @@ import tempfile
 import pandas as pd
 
 
-configfn = config['configfn'] if config.get('configfn') else 'config.yaml'
+fn = config['fn'] if config.get('fn') else 'config.yaml'
 yaml = ruamel.yaml.YAML()
-config = yaml.load(open(configfn))
-respath = os.path.dirname(configfn)
+config = yaml.load(open(fn))
+respath = os.path.dirname(fn)
 
 # ----------------------------------------------------------------------------
 # RULES
@@ -86,7 +86,7 @@ rule fastqscreen:
         fns=respath + '/data/{name}/fastqscreen/screen_{sample}.fa',
         fnid=respath + '/data/{name}/fastqscreen/screen_{sample}_ids.txt'
     run:
-        shell('python {input.script} --config {configfn} --sample {wildcards.sample}')
+        shell('python {input.script} --config {fn} --sample {wildcards.sample}')
 
 rule blast:
     """
@@ -106,7 +106,7 @@ rule blast:
         fns=respath + '/data/{name}/blast/blast_{sample}.{version}.txt',
         log=respath + '/data/{name}/logs/blast_{name}_{sample}.{version}.log.txt',
     run:
-        shell('python {input.script} --config {configfn} --sample {wildcards.sample}')
+        shell('python {input.script} --config {fn} --sample {wildcards.sample}')
 
 rule filterblast:
     """
@@ -127,7 +127,7 @@ rule filterblast:
             fntype=['integration', 'id_mappings']),
         log=respath + '/data/{name}/logs/integration_{name}_{sample}.{version}.log.txt',
     run:
-        shell('python {input.script} --config {configfn} --sample {wildcards.sample}')
+        shell('python {input.script} --config {fn} --sample {wildcards.sample}')
 
 rule location:
     """
@@ -145,7 +145,7 @@ rule location:
                    fntype=['true_integration', 'location', 'intergenic', 'ORF']),
         log=respath + '/data/{name}/logs/location_{name}_{sample}.{version}.log.txt',
     run:
-        shell('python {input.script} --config {configfn} --sample {wildcards.sample}')
+        shell('python {input.script} --config {fn} --sample {wildcards.sample}')
 
 rule cat_logs:
     """
@@ -198,8 +198,8 @@ rule downstream:
         fn=respath + '/data/{name}/results.html',
     run:
         cmd = "rmarkdown::render('" + input.script + "',output_file='" + os.path.abspath(output.fn) + \
-            "', params=list(configfn='" \
-            + os.path.abspath(configfn) + "'))"
+            "', params=list(fn='" \
+            + os.path.abspath(fn) + "'))"
         shell('R -e "{cmd}"')
 
 rule uncollapsed:
@@ -219,6 +219,6 @@ rule uncollapsed:
     output:
         fns=respath + '/data/{name}/uncollapsed_fastas/uncollapsed_true_integration_{sample}.{version}.fa',
     shell:
-        'python {input.script} --config {configfn} --sample {wildcards.sample}'
+        'python {input.script} --config {fn} --sample {wildcards.sample}'
 
 
