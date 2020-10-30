@@ -10,9 +10,9 @@
 # Experiment name:
 name: test_fullfastqSN
 
+# Indicate here the path(s) to the fastq(s), relative to the config.yaml file.
+# If multiple files, indicate each file in its own line with an opening dash.
 
-# Indicate here the path(s) to the fastq(s). If multiple files, indicate each file in its
-# own line with an opening dash. The paths are relative to the `start_HTtools.py` script.
 fastq:
   - ../SRR7068454full.fastq
 
@@ -20,18 +20,18 @@ fastq:
 # Sample blocks:
 # Copy/paste the sample block for each of the samples in the library.
 # Each block indicates:
-#   - the sample name (here BC3498)
+#   - the sample name
 #   - the barcode start position
 #   - the barcode length
 #   - the expected sequence from the barcode included to the end of LTR
-#   (if the library has Serial Numbers, the SN can be indicated with Xs in the sequence.
-#   Do not use A, T, G, C or N in the SN)
-#   - integrase: whether a wild-type integrase (wt) or frameshit (fs) was used. This determines the
-#   lenght of target site duplication (tsd). Only accepted values: wt or infs
+#     (if the library has Serial Numbers, the SN can be indicated with Xs in the sequence.
+#     Do not use A, T, G, C or N in the SN)
+#   - integrase: whether a wild-type integrase (wt) or frameshift (fs) was used. This determines the
+#     lenght of target site duplication (tsd). Only accepted values: wt or infs
 #   - lib_design: from which end of the retrotransposon was the sequencing done?
-#   Only accepted values: U5 or U3
-#   - SN_position: position of the Serial Number. If no Serial Number, indicate 'na'
-#   - SN_length: length of Serial Number. If no Serial Number, indicate 'na'
+#     Only accepted values: U5 or U3
+#   - SN_position: position of the Serial Number. If no Serial Number, indicate 'none'
+#   - SN_length: length of Serial Number. If no Serial Number, indicate 'none
 
 
 sample:
@@ -42,7 +42,6 @@ sample:
     sequence: CTCACCGCAGTTGATGCATAGGAAGCCxxxxxxxxCAAACTGCGTAGCTAACA
     integrase: wt
     lib_design: U5
-    # Uncomment and adjust the following 2 lines if the library has Serial Numbers:
     SN_position: 28
     SN_length: 8
   # sample block ----------------------------------------------
@@ -52,7 +51,6 @@ sample:
     sequence: GTCACCGCAGTTGATGCATAGGAAGCCxxxxxxxxCAAACTGCGTAGCTAACA
     integrase: wt
     lib_design: U5
-    # Uncomment and adjust the following 2 lines if the library has Serial Numbers:
     SN_position: 28
     SN_length: 8
   # sample block ----------------------------------------------
@@ -80,9 +78,9 @@ generate_uncollapsed: True
 # chromosome_coordinate_orientation, i.e. chr1_240580_-
 # Those positions will be screened out from the true_integrations
 # and saved in location/excluded/ for reference
-# Indicate 'na' if no position to exclude
+# Indicate 'none' if no position to exclude
 exclude:
-  - na
+  - none
 
 
 # -----------------------------------------------------------
@@ -91,7 +89,7 @@ exclude:
 
 # Those parameters do not typically need to be modified.
 # Filters against linker, ltrcircle, plasmid, primary_incomplete, 
-# second_incomplete and pbs are optional. Indicate 'na' to skip
+# second_incomplete and pbs are optional. Indicate 'none' to skip
 # those filters.
 
 legacy_mode: True
