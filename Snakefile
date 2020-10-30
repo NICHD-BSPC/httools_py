@@ -6,7 +6,7 @@ import tempfile
 import pandas as pd
 
 
-configfn = config['configfn'] if config.get('configfn') else 'config/config.yaml'
+configfn = config['configfn'] if config.get('configfn') else 'config.yaml'
 yaml = ruamel.yaml.YAML()
 config = yaml.load(open(configfn))
 respath = os.path.dirname(configfn)
@@ -62,7 +62,7 @@ rule fastqscreen:
     """
     input:
         fq=[get_fastq(fq) for fq in config['fastq']],
-        script=os.path.join(workflow.basedir, "fastqscreen.py")
+        script=os.path.join(workflow.basedir, "scripts/fastqscreen.py")
     params:
         p1=config['name'],
         p2=config['fastq'],
@@ -95,7 +95,7 @@ rule blast:
     input:
         fns=respath + '/data/{name}/fastqscreen/screen_{sample}.fa',
         log=respath + '/data/{name}/logs/fastq_screen_{name}_{sample}.log.txt',
-        script=os.path.join(workflow.basedir, "blast.py")
+        script=os.path.join(workflow.basedir, "scripts/blast.py")
     params:
         p1=config['genome'],
         p2=config['blastview'],
@@ -115,7 +115,7 @@ rule filterblast:
     input:
         fns=respath + '/data/{name}/blast/blast_{sample}.{version}.txt', 
         log=respath + '/data/{name}/logs/blast_{name}_{sample}.{version}.log.txt',
-        script=os.path.join(workflow.basedir, "filterblast.py")
+        script=os.path.join(workflow.basedir, "scripts/filterblast.py")
     params:
         p1=config['max_score_diff'],
         p2=config['preexist_ltr'],
@@ -136,7 +136,7 @@ rule location:
     input:
         fns=respath + '/data/{name}/filblast/integration_{sample}.{version}.txt',
         log=respath + '/data/{name}/logs/integration_{name}_{sample}.{version}.log.txt',
-        script=os.path.join(workflow.basedir, "location.py")
+        script=os.path.join(workflow.basedir, "scripts/location.py")
     params:
         p1=config['genomecds'],
         p2=config['exclude']
@@ -189,7 +189,7 @@ rule downstream:
                    sample=config['sample'].keys(), version=config['genomevs'][config['genome']]),
         log=expand(respath + '/data/{{name}}/logs/{logtype}_{{name}}_log.txt',
                     logtype=['fastq_screen', 'integration', 'location']),
-        script=os.path.join(workflow.basedir, "results.Rmd")
+        script=os.path.join(workflow.basedir, "scripts/results.Rmd")
     params:
         p1=config['orf_map_interval'],
         p2=config['avg_orf_length'],
@@ -213,7 +213,7 @@ rule uncollapsed:
         fn1=respath + '/data/{name}/fastqscreen/screen_{sample}.fa',
         fn2=respath + '/data/{name}/filblast/id_mappings_{sample}.{version}.txt',
         fn3=respath + '/data/{name}/location/true_integration_{sample}.{version}.txt',
-        script=os.path.join(workflow.basedir, "uncollapsedfasta.py")
+        script=os.path.join(workflow.basedir, "scripts/uncollapsedfasta.py")
     params:
         p1=config['generate_uncollapsed']
     output:

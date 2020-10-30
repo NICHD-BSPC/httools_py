@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name="httools_py"
+#SBATCH --job-name="httools"
 #SBATCH --partition="norm"
 #SBATCH --time=12:00:00
 
@@ -16,8 +16,8 @@ if [[ ! -e logs ]]; then mkdir -p logs; fi
 # Run snakemake
 (
     time snakemake \
-    -s scripts/Snakefile \
-    -R `snakemake -s scripts/Snakefile --config configfn=$1 --list-params-changes` \
+    -s Snakefile \
+    -R `snakemake -s Snakefile --config configfn=$1 --list-params-changes` \
     -p \
     --directory $PWD \
     -k \
