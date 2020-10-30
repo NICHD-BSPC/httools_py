@@ -1,7 +1,5 @@
 #!/bin/bash
 
-# the snakemake test is using the same expected files than test_full.sh and test_fullSN.sh
-
 # -----------------------------------------------------------------
 
 # SN version legacy_mode
