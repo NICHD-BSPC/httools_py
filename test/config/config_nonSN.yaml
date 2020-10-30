@@ -125,7 +125,7 @@ orf_map_window: 5000
 # Paths to genome databases, preexisting LTRs and CDS coordinates
 # Please note the paths are relative to the HTtools directory.
 genomedb:
-  1: database/test_makedb/chr123.fas
+  1: database/2007/chr123.fas
   2: database/2012_ASM294v2/chr123.fas
   3: database/2007_with_pHL2882/chr123pHL2882.fas
   4: database/2012_ASM294v2_pHL2882/chr123pHL2882.fas
@@ -144,7 +144,7 @@ preexist_ltr:
     ltr3: database/LTR_2012_ASM294v2/Tf2_3_LTR-U3.txt
     sololtr: database/LTR_2012_ASM294v2/solo_LTR-U3.txt
 genomecds:
-  1: database/test_makedb/cds.txt
+  1: database/2007/cds.txt
   2: database/2012_ASM294v2/cds.txt
   3: database/2007_with_pHL2882/cds.txt
   4: database/2012_ASM294v2_pHL2882/cds.txt
