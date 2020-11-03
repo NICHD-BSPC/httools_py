@@ -53,8 +53,7 @@ subchunkify <- function(g) {
 
 ```{r data_setup}
 config <- read_yaml(params$fn)
-respath <- dirname(params$fn)
-mydir <- paste0(respath, '/data/', config[['name']])
+mydir <- paste0('../data/', config[['name']])
 dir.create(paste0(mydir, '/ORFmap'), showWarnings=FALSE)
 dir.create(paste0(mydir, '/heatmap'), showWarnings=FALSE)
 logdir <- paste0(mydir, '/logs/')
@@ -220,9 +219,9 @@ bply <- function(bp, xlab, ylab= 'Number of sequence reads') {
 
 catlink <- function(file, sample, legend) {
     file <- str_replace(file,
-                        paste0(respath, '/data/', config['name'], '/'),
+                        paste0('data/', config['name'], '/'),
                         '')
-    cat(paste0('\n\n', respath, '/data/', config['name'], '/\n\n'))
+    cat(paste0('\n\ndata/', config['name'], '/\n\n'))
     cat(paste0(
         '\n- [', file, '](', file, ') : ', legend, ' file for ', sample ,' sample(s)\n'))
 }

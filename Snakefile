@@ -9,7 +9,6 @@ import pandas as pd
 fn = config['fn'] if config.get('fn') else 'config.yaml'
 yaml = ruamel.yaml.YAML()
 config = yaml.load(open(fn))
-respath = os.path.dirname(fn)
 
 # ----------------------------------------------------------------------------
 # RULES
@@ -17,26 +16,26 @@ respath = os.path.dirname(fn)
 
 
 final_targets = [
-        expand(respath + '/data/{name}/logs/fastq_screen_{name}_{sample}.log.txt',
+        expand('data/{name}/logs/fastq_screen_{name}_{sample}.log.txt',
                name=config['name'], sample=config['sample'].keys()),
-        expand(respath + '/data/{name}/logs/{logtype}_{name}_{sample}.{version}.log.txt',
+        expand('data/{name}/logs/{logtype}_{name}_{sample}.{version}.log.txt',
             logtype=['blast', 'integration', 'location'], name=config['name'],
                sample=config['sample'].keys(), version=config['genomevs'][config['genome']]),
-        expand(respath + '/data/{name}/fastqscreen/screen_{sample}.fa',
+        expand('data/{name}/fastqscreen/screen_{sample}.fa',
                sample=config['sample'].keys(), name=config['name']),
-        expand(respath + '/data/{name}/blast/blast_{sample}.{version}.txt', name=config['name'],
+        expand('data/{name}/blast/blast_{sample}.{version}.txt', name=config['name'],
                    sample=config['sample'].keys(), version=config['genomevs'][config['genome']]),
-        expand(respath + '/data/{name}/filblast/integration_{sample}.{version}.txt', name=config['name'],
+        expand('data/{name}/filblast/integration_{sample}.{version}.txt', name=config['name'],
                    sample=config['sample'].keys(), version=config['genomevs'][config['genome']]),
-        expand(respath + '/data/{name}/location/{fntype}_{sample}.{version}.txt', name=config['name'],
+        expand('data/{name}/location/{fntype}_{sample}.{version}.txt', name=config['name'],
                    fntype=['true_integration', 'location', 'intergenic', 'ORF'],
                    sample=config['sample'].keys(), version=config['genomevs'][config['genome']]),
-        respath + '/data/{name}/results.html'.format(name=config['name'])
+        'data/{name}/results.html'.format(name=config['name'])
 ]
 
 # conditional uncollapsed fasta target
 if (config['generate_uncollapsed'] == True):
-    unclp = expand(respath + '/data/{name}/uncollapsed_fastas/uncollapsed_true_integration_{sample}.{version}.fa', name=config['name'],
+    unclp = expand('data/{name}/uncollapsed_fastas/uncollapsed_true_integration_{sample}.{version}.fa', name=config['name'],
                    sample=config['sample'].keys(), version=config['genomevs'][config['genome']])
     final_targets.append(unclp)
 
@@ -48,20 +47,13 @@ rule targets:
     input:
         final_targets
 
-def get_fastq(fq):
-
-    if os.path.isabs(fq):
-        return(fq)
-    else:
-        return(os.path.abspath(respath + '/' + fq))
-
 
 rule fastqscreen:
     """
     Filtering of fastq files
     """
     input:
-        fq=[get_fastq(fq) for fq in config['fastq']],
+        fq=[fq for fq in config['fastq']],
         script=os.path.join(workflow.basedir, "scripts/fastqscreen.py")
     params:
         p1=config['name'],
@@ -82,9 +74,9 @@ rule fastqscreen:
         p16=config['pbs'],
         p17=config['tsd']
     output:
-        log=respath + '/data/{name}/logs/fastq_screen_{name}_{sample}.log.txt',
-        fns=respath + '/data/{name}/fastqscreen/screen_{sample}.fa',
-        fnid=respath + '/data/{name}/fastqscreen/screen_{sample}_ids.txt'
+        log='data/{name}/logs/fastq_screen_{name}_{sample}.log.txt',
+        fns='data/{name}/fastqscreen/screen_{sample}.fa',
+        fnid='data/{name}/fastqscreen/screen_{sample}_ids.txt'
     run:
         shell('python {input.script} --config {fn} --sample {wildcards.sample}')
 
@@ -93,8 +85,8 @@ rule blast:
     Mapping of filtered fasta files
     """
     input:
-        fns=respath + '/data/{name}/fastqscreen/screen_{sample}.fa',
-        log=respath + '/data/{name}/logs/fastq_screen_{name}_{sample}.log.txt',
+        fns='data/{name}/fastqscreen/screen_{sample}.fa',
+        log='data/{name}/logs/fastq_screen_{name}_{sample}.log.txt',
         script=os.path.join(workflow.basedir, "scripts/blast.py")
     params:
         p1=config['genome'],
@@ -103,8 +95,8 @@ rule blast:
         p4=config['genomedb'],
         p5=config['genomevs'],
     output:
-        fns=respath + '/data/{name}/blast/blast_{sample}.{version}.txt',
-        log=respath + '/data/{name}/logs/blast_{name}_{sample}.{version}.log.txt',
+        fns='data/{name}/blast/blast_{sample}.{version}.txt',
+        log='data/{name}/logs/blast_{name}_{sample}.{version}.log.txt',
     run:
         shell('python {input.script} --config {fn} --sample {wildcards.sample}')
 
@@ -113,8 +105,8 @@ rule filterblast:
     Filtering of blast results
     """
     input:
-        fns=respath + '/data/{name}/blast/blast_{sample}.{version}.txt', 
-        log=respath + '/data/{name}/logs/blast_{name}_{sample}.{version}.log.txt',
+        fns='data/{name}/blast/blast_{sample}.{version}.txt', 
+        log='data/{name}/logs/blast_{name}_{sample}.{version}.log.txt',
         script=os.path.join(workflow.basedir, "scripts/filterblast.py")
     params:
         p1=config['max_score_diff'],
@@ -123,9 +115,9 @@ rule filterblast:
         p4=config['full_chro_list'],
         p5=config['short_chro_list']
     output:
-        fns=expand(respath + '/data/{{name}}/filblast/{fntype}_{{sample}}.{{version}}.txt',
+        fns=expand('data/{{name}}/filblast/{fntype}_{{sample}}.{{version}}.txt',
             fntype=['integration', 'id_mappings']),
-        log=respath + '/data/{name}/logs/integration_{name}_{sample}.{version}.log.txt',
+        log='data/{name}/logs/integration_{name}_{sample}.{version}.log.txt',
     run:
         shell('python {input.script} --config {fn} --sample {wildcards.sample}')
 
@@ -134,16 +126,16 @@ rule location:
     Mapping integrations relative to ORFs
     """
     input:
-        fns=respath + '/data/{name}/filblast/integration_{sample}.{version}.txt',
-        log=respath + '/data/{name}/logs/integration_{name}_{sample}.{version}.log.txt',
+        fns='data/{name}/filblast/integration_{sample}.{version}.txt',
+        log='data/{name}/logs/integration_{name}_{sample}.{version}.log.txt',
         script=os.path.join(workflow.basedir, "scripts/location.py")
     params:
         p1=config['genomecds'],
         p2=config['exclude']
     output:
-        fns=expand(respath + '/data/{{name}}/location/{fntype}_{{sample}}.{{version}}.txt',
+        fns=expand('data/{{name}}/location/{fntype}_{{sample}}.{{version}}.txt',
                    fntype=['true_integration', 'location', 'intergenic', 'ORF']),
-        log=respath + '/data/{name}/logs/location_{name}_{sample}.{version}.log.txt',
+        log='data/{name}/logs/location_{name}_{sample}.{version}.log.txt',
     run:
         shell('python {input.script} --config {fn} --sample {wildcards.sample}')
 
@@ -152,16 +144,16 @@ rule cat_logs:
     Concatenate sample logs for filterblast and location into experiment logs
     """
     input:
-        logint=expand(respath + '/data/{{name}}/logs/integration_{{name}}_{sample}.{version}.log.txt',
+        logint=expand('data/{{name}}/logs/integration_{{name}}_{sample}.{version}.log.txt',
                 sample=config['sample'].keys(), version=config['genomevs'][config['genome']]),
-        logloc=expand(respath + '/data/{{name}}/logs/location_{{name}}_{sample}.{version}.log.txt',
+        logloc=expand('data/{{name}}/logs/location_{{name}}_{sample}.{version}.log.txt',
                 sample=config['sample'].keys(), version=config['genomevs'][config['genome']]),
-        logfas=expand(respath + '/data/{{name}}/logs/fastq_screen_{{name}}_{sample}.log.txt',
+        logfas=expand('data/{{name}}/logs/fastq_screen_{{name}}_{sample}.log.txt',
                 sample=config['sample'].keys(), version=config['genomevs'][config['genome']])
     output:
-        fnint=respath + '/data/{name}/logs/integration_{name}_log.txt',
-        fnloc=respath + '/data/{name}/logs/location_{name}_log.txt',
-        fnfas=respath + '/data/{name}/logs/fastq_screen_{name}_log.txt'
+        fnint='data/{name}/logs/integration_{name}_log.txt',
+        fnloc='data/{name}/logs/location_{name}_log.txt',
+        fnfas='data/{name}/logs/fastq_screen_{name}_log.txt'
     run:
         df = {}
         for fn in input.logint:
@@ -184,10 +176,10 @@ rule downstream:
     Report and ORFmap
     """
     input:
-        fns=expand(respath + '/data/{{name}}/location/{fntype}_{sample}.{version}.txt',
+        fns=expand('data/{{name}}/location/{fntype}_{sample}.{version}.txt',
                    fntype=['true_integration', 'location', 'intergenic', 'ORF'],
                    sample=config['sample'].keys(), version=config['genomevs'][config['genome']]),
-        log=expand(respath + '/data/{{name}}/logs/{logtype}_{{name}}_log.txt',
+        log=expand('data/{{name}}/logs/{logtype}_{{name}}_log.txt',
                     logtype=['fastq_screen', 'integration', 'location']),
         script=os.path.join(workflow.basedir, "scripts/results.Rmd")
     params:
@@ -195,7 +187,7 @@ rule downstream:
         p2=config['avg_orf_length'],
         p3=config['orf_map_window']
     output:
-        fn=respath + '/data/{name}/results.html',
+        fn='data/{name}/results.html',
     run:
         cmd = "rmarkdown::render('" + input.script + "',output_file='" + os.path.abspath(output.fn) + \
             "', params=list(fn='" \
@@ -210,14 +202,14 @@ rule uncollapsed:
     as many times as there was duplicate sequences.
     """
     input:
-        fn1=respath + '/data/{name}/fastqscreen/screen_{sample}.fa',
-        fn2=respath + '/data/{name}/filblast/id_mappings_{sample}.{version}.txt',
-        fn3=respath + '/data/{name}/location/true_integration_{sample}.{version}.txt',
+        fn1='data/{name}/fastqscreen/screen_{sample}.fa',
+        fn2='data/{name}/filblast/id_mappings_{sample}.{version}.txt',
+        fn3='data/{name}/location/true_integration_{sample}.{version}.txt',
         script=os.path.join(workflow.basedir, "scripts/uncollapsedfasta.py")
     params:
         p1=config['generate_uncollapsed']
     output:
-        fns=respath + '/data/{name}/uncollapsed_fastas/uncollapsed_true_integration_{sample}.{version}.fa',
+        fns='data/{name}/uncollapsed_fastas/uncollapsed_true_integration_{sample}.{version}.fa',
     shell:
         'python {input.script} --config {fn} --sample {wildcards.sample}'
 

@@ -22,9 +22,9 @@ config = yaml.load(open(args.config))
 samples = [args.sample] if args.sample else config['sample'].keys()
 legacy_mode = config['legacy_mode']
 
-logdir = os.path.dirname(args.config) + '/data/' + config['name'] + '/logs'
+logdir = 'data/' + config['name'] + '/logs'
 Path(logdir).mkdir(parents=True, exist_ok=True)
-mydir = os.path.dirname(args.config) + '/data/' + config['name'] + '/uncollapsed_fastas'
+mydir = 'data/' + config['name'] + '/uncollapsed_fastas'
 Path(mydir).mkdir(parents=True, exist_ok=True)
 
 
@@ -40,15 +40,15 @@ class SampleConfig:
         self.integ = self.get_integ(self.samplevs, config, args)
 
     def get_fastafn(self, sample, config, args):
-        fastanm = args.fasta if args.fasta else os.path.dirname(args.config) + '/data/' + config['name'] + '/fastqscreen/screen_' + sample + '.fa'
+        fastanm = args.fasta if args.fasta else 'data/' + config['name'] + '/fastqscreen/screen_' + sample + '.fa'
         return fastanm
 
     def get_ids(self, sample, config, args):
-        ids = args.ids if args.ids else os.path.dirname(args.config) + '/data/' + config['name'] + '/filblast/id_mappings_' + sample + '.txt'
+        ids = args.ids if args.ids else 'data/' + config['name'] + '/filblast/id_mappings_' + sample + '.txt'
         return ids
 
     def get_integ(self, sample, config, args):
-        integ = args.integration if args.integration else os.path.dirname(args.config) + '/data/' + config['name'] + '/location/true_integration_' + sample + '.txt'
+        integ = args.integration if args.integration else 'data/' + config['name'] + '/location/true_integration_' + sample + '.txt'
         return integ
 
 def get_id_dict(samplecfg):

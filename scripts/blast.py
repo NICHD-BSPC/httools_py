@@ -21,9 +21,9 @@ config = yaml.load(open(args.config))
 samples = [args.sample] if args.sample else config['sample'].keys()
 legacy_mode = config['legacy_mode']
 
-logdir = os.path.dirname(args.config) + '/data/' + config['name'] + '/logs'
+logdir = 'data/' + config['name'] + '/logs'
 Path(logdir).mkdir(parents=True, exist_ok=True)
-mydir = os.path.dirname(args.config) + '/data/' + config['name'] + '/blast'
+mydir = 'data/' + config['name'] + '/blast'
 Path(mydir).mkdir(parents=True, exist_ok=True)
 
 
@@ -39,7 +39,7 @@ class SampleConfig:
         self.suffix = self.get_suffix(config, args)
 
     def get_fastafn(self, sample, args):
-        fastanm = args.fasta if args.fasta else os.path.dirname(args.config) + '/data/' + config['name'] + '/fastqscreen/screen_' + sample + '.fa'
+        fastanm = args.fasta if args.fasta else 'data/' + config['name'] + '/fastqscreen/screen_' + sample + '.fa'
         return fastanm
 
     def get_genome(self, config, args):
