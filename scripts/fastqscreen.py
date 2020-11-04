@@ -186,6 +186,7 @@ class ScreenFastq:
         # should have been > because as it is it only allows for 1 mismatch
         maxmis = samplecfg.sn_length + samplecfg.allowed_mismatches -1 if legacy_mode \
             else samplecfg.sn_length + samplecfg.allowed_mismatches
+        maxmis = 0 if maxmis < 0 else maxmis
         score = self.SN_fuzzymatch(seq,
                           samplecfg.end_of_ltr,
                           len(samplecfg.seq)-len(samplecfg.end_of_ltr) + 1,
