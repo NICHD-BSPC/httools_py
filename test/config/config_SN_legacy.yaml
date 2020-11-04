@@ -14,7 +14,7 @@ name: test_fullfastqSN
 # If multiple files, indicate each file in its own line with an opening dash.
 
 fastq:
-  - ../SRR7068454full.fastq
+  - test/SRR7068454full.fastq
 
 
 # Sample blocks:

@@ -15,7 +15,7 @@ name: test_nonlegacy
 # If multiple files, indicate each file in its own line with an opening dash.
 
 fastq:
-  - ../SRR5305121full.fastq
+  - test/SRR5305121full.fastq
 
 
 # Sample blocks:
