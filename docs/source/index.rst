@@ -233,7 +233,7 @@ Exemple block:
    Those positions will be screened out from the true_integrations
    and written in ``data/{name}/location/excluded/`` for reference.
 
-   Indicate 'none' if no position should be excluded.
+   Indicate ``none`` if no position should be excluded.
 
 
 Advanced parameters include legacy_mode (see section :ref:`legacy_mode changes <legacy-mode-changes>`
@@ -243,7 +243,7 @@ as long as the experimental design remains identical. See the section :ref:`Defa
 parameters <default-advanced-parameters>`, as well as the example files located in ``test/config/`` and
 the templates ``config-Tf1.yaml`` and ``config-Hermes.yaml`` for more details.
 
-Indicate `none` in a filtering step parameter to skip this filtering step.
+Indicate ``none`` in a filtering step parameter to skip this filtering step.
 
 
 Running the workflow
@@ -338,6 +338,7 @@ processed through the ORFmap step. From the HTtools directory:
 (please note the ``../`` in the output and params arguments, the paths
 must be relative to the results.Rmd file)
 
+.. _adding-custom-genome-annotation-and-homologous-recombination-references:
 
 Adding custom genome, annotation and homologous recombination references
 ------------------------------------------------------------------------
@@ -376,6 +377,8 @@ YAML configuration file accordingly.
    BMC Bioinformatics 10, 421 (2009). https://doi.org/10.1186/1471-2105-10-421
 
 
+.. _output-files-of-interest:
+
 Output files of interest
 ------------------------
 
@@ -401,6 +404,9 @@ Output files of interest:
 8) ``data/{name}/ORFmap/ORFmap_{sample}.txt``: table summarizing the % of integration within
    intervals upstream, downstream and within ORFs.
 9) ``data/{name}/logs/log_*.txt``: summary of sequence read and integration numbers.
+
+
+.. _legacy-mode-changes:
 
 legacy_mode changes
 -------------------
@@ -476,6 +482,8 @@ SpeI incomplete. This may change the numbers within the filtering
 categories but does not affect whether a read is filtered out. This
 behavior is conserved in python when ``legacy_mode=False``.
 
+.. _default-advanced-parameters:
+
 Default advanced parameters
 ---------------------------
 
@@ -487,21 +495,26 @@ but can be adjusted to filter other sequences. The table below gives the specifi
 Indicate ``none`` to disable a filter.
 
 
-+------------+--------------------------------------------------------+--------------------+--------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| Filter key | Match position                                         | Allowed mismatches | Filtered out | Purpose (exemple of Tf1)                                                                                                                                                        |
-+============+========================================================+====================+==============+=================================================================================================================================================================================+
-| ``plasmid``    | immediately after end of retrotransposon                    | yes, set with ``allowed_mismatches``  | yes          | screens out reads from amplification of donor plasmid                                                                                                                           |
-+------------+--------------------------------------------------------+--------------------+--------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| ``pbs``        | immediately after end of retrotransposon                    | no                 | yes          | screens out reads starting with Primer Binding Site (PBS), indicating RNA intermediate structure                                                                                                                       |
-+------------+--------------------------------------------------------+--------------------+--------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| ``primary_re`` | immediately or 1bp downstream end of transposon        | no                 | yes          | screens out reads starting with MseI restriction site (or 1bp downstream), indicating ligation of 2 restriction fragments and preventing accurate mapping |
-+------------+--------------------------------------------------------+--------------------+--------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| ``ltrcircle``  | anywhere in trimmed sequence read*                      | yes, set with ``allowed_mismatches``  | yes          | screens out abherant sequences resulting from LTR-circles                                                                                                                       |
-+------------+--------------------------------------------------------+--------------------+--------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| ``second_re``  | specific distance from end of transposon, set with ``dist_to_second_incomplete`` | yes, set with ``allowed_mismatches``  | yes          | screens out incomplete secondary restriction digest, resulting in sequencing Tf1 internal sequences                                                                                |
-+------------+--------------------------------------------------------+--------------------+--------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| ``linker``     | anywhere in trimmed sequence read*                      | yes, set with ``allowed_mismatches``  | no           | quantifies the number of sequence reads containing the ligation linker sequence. For informational purpose                                                                                               |
-+------------+--------------------------------------------------------+--------------------+--------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
++----------------+-------------------------------------------+------------------------+--------------+-----------------------------------------------------------------------------------------------------+
+| Filter key     | Match position                            | Allowed mismatches     | Filtered out | Purpose (exemple of Tf1)                                                                            |
++============+===============================================+========================+==============+=====================================================================================================+
+| ``plasmid``    | immediately after end of retrotransposon  | yes, set with          | yes          | screens out reads from amplification of donor plasmid                                               |
+|                |                                           | ``allowed_mismatches`` |              |                                                                                                     |
++----------------+-------------------------------------------+------------------------+--------------+-----------------------------------------------------------------------------------------------------+
+| ``pbs``        | immediately after end of retrotransposon  | no                     | yes          | screens out reads starting with Primer Binding Site (PBS), indicating RNA intermediate structure    |
++----------------+-------------------------------------------+------------------------+--------------+-----------------------------------------------------------------------------------------------------+
+| ``primary_re`` | immediately or 1bp downstream end of      | no                     | yes          | screens out reads starting with MseI restriction site (or 1bp downstream), indicating ligation      |
+|                | transposon                                |                        |              | of 2 restriction fragments and preventing accurate mapping                                          |
++----------------+-------------------------------------------+------------------------+--------------+-----------------------------------------------------------------------------------------------------+
+| ``ltrcircle``  | anywhere in trimmed sequence read*        | yes, set with          | yes          | screens out abherant sequences resulting from LTR-circles                                           |
+|                |                                           | ``allowed_mismatches`` |              |                                                                                                     |
++----------------+-------------------------------------------+------------------------+--------------+-----------------------------------------------------------------------------------------------------+
+| ``second_re``  | specific distance from end of transposon, | yes, set with          | yes          | screens out incomplete secondary restriction digest, resulting in sequencing Tf1 internal sequences |
+|                | set with ``dist_to_second_incomplete``    | ``allowed_mismatches`` |              |                                                                                                     |
++----------------+-------------------------------------------+------------------------+--------------+-----------------------------------------------------------------------------------------------------+
+| ``linker``     | anywhere in trimmed sequence read*        | yes, set with          | no           | quantifies the number of sequence reads containing the ligation linker sequence. For informational  |
+|                |                                           | ``allowed_mismatches`` |              | purpose                                                                                             |
++----------------+-------------------------------------------+------------------------+--------------+-----------------------------------------------------------------------------------------------------+
 
 * trimmed sequence read indicate trimmed of end of transposon reference sequence (in ``sequence`` of sample block)
 
