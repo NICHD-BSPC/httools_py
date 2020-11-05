@@ -165,32 +165,34 @@ Adjust the parameters to match your experiment design.
 All sample information and workflow configurations are specified in the
 ``config.yaml`` file.
 
-The following fields need to be adjusted to individual runs:
+The following fields need to be adjusted for each individual run:
 
 -  ``name`` experiment name. Should be unique in the project directory to avoid 
-   overwritting of results. All results will be stored in a directory labelled ``name``
+   overwritting of results. All results will be stored in a directory labelled ``data/{name}``
 
--  ``fastq`` list of path(s) to the fastq file(s). Path(s) can be either
-   absolute or relative to the config file. Can be a .gz file
+-  ``fastq`` list of path(s) to the fastq file(s). Path(s) are relative to the HTtools directory.
+   Can be a .gz file
 
--  ``sample`` block: The sample block must be copied for each sample in
-   the fastq files (typically for each barcode). It must start with a
-   unique name and contains the fields:
+-  ``sample`` block: The sample block must be copied for each sample
+   (typically for each barcode). It must start with a unique name and contains the fields:
 
-   -  ``barcode_start`` position in the sequence reads where the barcode
-      starts
-   -  ``barcode_length`` lenght of the barcode in nulceotides
-   -  ``sequence`` expected sequence, from the barcode (included) to the
+   -  ``barcode_start`` position in the sequence reads of the barcode
+      start. Indicate ``none`` in absence of barcode.
+   -  ``barcode_length`` lenght of the barcode. Indicate ``none`` in absence of barcode.
+   -  ``sequence`` expected sequence, from the barcode (included, if applicable) to the
       end of the LTR. Note: if a Serial Number is included, it must be
-      indicated with ``x``\ s
+      indicated with ``x``\ s.
    -  ``integrase`` whether the integrase was native (``wt``) or
-      frameshift (``fs``)
+      frameshift (``fs``). This matters for shifting / not shifting the coordinates by the
+      length of the Target Site Duplication (TSD).
    -  ``lib_design`` whether the sequence reads originate from the
-      ``U5`` or the ``U3`` end of the retrotransposon
+      ``U5`` (downstream) or the ``U3`` (upstream) end of the retrotransposon.
    -  ``SN_position`` (optional) start position of the Serial Number,
-      indicate ‘none’ if no SN was used
+      indicate ‘none’ if no SN was used.
    -  ``SN_length`` (optional) length of the Serial Number, indicate
-      ‘none’ if no SN was used
+      ‘none’ if no SN was used.
+
+Exemple block:
 
 .. code-block:: yaml
 
@@ -215,9 +217,13 @@ The following fields need to be adjusted to individual runs:
       pHL2882
    -  ``4``: 2012 release plus the sequence of the expression plasmid
       pHL2882
+   
+   Additional genome references can be added. See section 
+   :ref:`Adding custom genome, annotation and homologous recombination references <adding_custom_genome_annotation_and_homologous_recombination_references>`.
+
 
 -  ``generate_uncollapsed`` whether to output (``True``) or not
-   (``False``) fastas of trimmed sequence reads corresponding to the
+   (``False``) fastas of trimmed sequence reads corresponding to the positions in the
    integration files. Sequences are trimmed after the end of the LTR and
    are replicated as many times as there were duplicate sequence reads.
 
@@ -227,15 +233,15 @@ The following fields need to be adjusted to individual runs:
    Those positions will be screened out from the true_integrations
    and written in ``data/{name}/location/excluded/`` for reference.
 
-   Indicate 'none' if no position to exclude
+   Indicate 'none' if no position should be excluded.
 
 
 Advanced parameters include legacy_mode (see section :ref:`legacy_mode changes <legacy-mode-changes>`
 for details), reference sequences used for screening, blast parameters, and are also specified in
 the ``config.yaml`` file. Those parameters do not typically need to be modified between experiements
 as long as the experimental design remains identical. See the section :ref:`Default advanced 
-parameters <default-advanced-parameters>`, as well as the example files located in ``test/config/``
-for more details.
+parameters <default-advanced-parameters>`, as well as the example files located in ``test/config/`` and
+the templates ``config-Tf1.yaml`` and ``config-Hermes.yaml`` for more details.
 
 Indicate `none` in a filtering step parameter to skip this filtering step.
 
@@ -473,6 +479,34 @@ behavior is conserved in python when ``legacy_mode=False``.
 Default advanced parameters
 ---------------------------
 
+HTtools performs a series of filtering steps on the sequence reads that are defined in the
+Advanced parameters section of the ``config.yaml`` file. Those filters were
+developed to screen out reads that were non-specific of *bona-fide* Tf1 integrations,
+but can be adjusted to filter other sequences. The table below gives the specifics of each filter.
+
+Indicate ``none`` to disable a filter.
+
+
++------------+--------------------------------------------------------+--------------------+--------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Filter key | Match position                                         | Allowed mismatches | Filtered out | Purpose (exemple of Tf1)                                                                                                                                                        |
++============+========================================================+====================+==============+=================================================================================================================================================================================+
+| ``plasmid``    | immediately after end of retrotransposon                    | yes, set with ``allowed_mismatches``  | yes          | screens out reads from amplification of donor plasmid                                                                                                                           |
++------------+--------------------------------------------------------+--------------------+--------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| ``pbs``        | immediately after end of retrotransposon                    | no                 | yes          | screens out reads starting with Primer Binding Site (PBS), indicating RNA intermediate structure                                                                                                                       |
++------------+--------------------------------------------------------+--------------------+--------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| ``primary_re`` | immediately or 1bp downstream end of transposon        | no                 | yes          | screens out reads starting with MseI restriction site (or 1bp downstream), indicating ligation of 2 restriction fragments and preventing accurate mapping |
++------------+--------------------------------------------------------+--------------------+--------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| ``ltrcircle``  | anywhere in trimmed sequence read*                      | yes, set with ``allowed_mismatches``  | yes          | screens out abherant sequences resulting from LTR-circles                                                                                                                       |
++------------+--------------------------------------------------------+--------------------+--------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| ``second_re``  | specific distance from end of transposon, set with ``dist_to_second_incomplete`` | yes, set with ``allowed_mismatches``  | yes          | screens out incomplete secondary restriction digest, resulting in sequencing Tf1 internal sequences                                                                                |
++------------+--------------------------------------------------------+--------------------+--------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| ``linker``     | anywhere in trimmed sequence read*                      | yes, set with ``allowed_mismatches``  | no           | quantifies the number of sequence reads containing the ligation linker sequence. For informational purpose                                                                                               |
++------------+--------------------------------------------------------+--------------------+--------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+* trimmed sequence read indicate trimmed of end of transposon reference sequence (in ``sequence`` of sample block)
+
+Exemple block:
+
 .. code-block:: yaml
 
     # -----------------------------------------------------------
@@ -483,42 +517,42 @@ Default advanced parameters
     # second_incomplete and pbs are optional. Indicate 'none' to skip
     # those filters.
     legacy_mode: False                          # whether to enable legacy_mode
-    length_to_match: 34                         # number of nucleotides to match to reference filtering sequences during fastq screening
+    length_to_match: 34                         # length of the end of transposon and of filtering sequences that will be matched to sequence reads during fastq filtering
     min_length: 14                              # minimum length for trimmed reads to be processed
-    allowed_mismatches: 2                       # number of mismatches allowed when screening fastqs for reference filtering sequences
-    linker: TAGTCCCTTAAGCGGAG                   # sequence of linker to be filtered out
-    ltrcircle:
-      U5: TGTCAGCAATACTAGCAGCATGGCTGATACACTA    # sequence of terminal-repeat circle to be filtered out for U5 libraries
-      U3: TGTTAGCTACGCAGTTACCATAAACTAAATTCCT    # sequence of terminal-repeat circle to be filtered out for U3 libraries
-    plasmid:
-      U5: GAAGTAAATGAAATAACGATCAACTTCATATCAA    # sequence of donor plasmid to be filtered out for U5 libraries
-      U3: none                                  # sequence of donor plasmid to be filtered out for U3 libraries
-    primary_re:
-      U5: MseI                                  # name of primary restriction enzyme for U5 libraries
-      U3: MseI                                  # name of primary restriction enzyme for U3 libraries
-    primary_incomplete:
-      U5: TTAA                                  # sequence of primary restriction site to be filtere out for U5 libraries
-      U3: TTAA                                  # sequence of primary restriction site to be filtere out for U3 libraries
-    second_re:
-      U5: SpeI                                  # name of secondary restriction enzyme for U5 libraries
-      U3: BspHI                                 # name of secondary restriction enzyme for U3 libraries
-    second_incomplete:
-      U5: AATTCTTTTCGAGAAAAAGGAATTATTGACTAGT    # sequence of secondary restriction site to be filtere out for U5 libraries
-      U3: TTACATTGCACAAGATAAAAATATATCATCATGA    # sequence of secondary restriction site to be filtere out for U3 libraries
-    dist_to_second_incomplete:
-      U5: 28                                    # distance between end of transposable element end and position of secondary_incomplete sequence for U5 libraries
-      U3: 22                                    # distance between end of transposable element end and position of secondary_incomplete sequence for U3 libraries
-    pbs:
-      U5: ATAACTGAACT                           # primer binding site (PBS) sequence to be filtered out for U5 libraries
-      U3: TTGCCCTCCCC                           # primer binding site (PBS) sequence to be filtered out for U3 libraries
-    tsd:
-      wt: 5                                     # length of target site duplication (TSD) in wild-type integrase context
-      infs: 0                                   # length of target site duplication (TSD) in integrase-frameshift context
-    blastview: 6                                # view parameter for blast results. Modifying this might interfere with subsequent screening steps
+    allowed_mismatches: 2                       # number of mismatches allowed when filtering fastqs for end of transposon, and ltrcircle, second_re and linker filters
+    linker: TAGTCCCTTAAGCGGAG                   # linker sequence to be filtered out
+    ltrcircle:                                  # sequence of terminal-repeat circle to be filtered out for U5 and U3 libraries
+      U5: TGTCAGCAATACTAGCAGCATGGCTGATACACTA
+      U3: TGTTAGCTACGCAGTTACCATAAACTAAATTCCT
+    plasmid:                                    # sequence of donor plasmid to be filtered out for U5 and U3 libraries
+      U5: GAAGTAAATGAAATAACGATCAACTTCATATCAA
+      U3: none
+    primary_re:                                 # name of primary restriction enzyme for U5 and U3 libraries
+      U5: MseI
+      U3: MseI
+    primary_incomplete:                         # sequence of primary restriction site to be filtere out for U5 and U3 libraries
+      U5: TTAA
+      U3: TTAA
+    second_re:                                  # name of secondary restriction enzyme for U5 and U3 libraries
+      U5: SpeI
+      U3: BspHI
+    second_incomplete:                          # sequence of secondary restriction site to be filtere out for U5 and U3 libraries
+      U5: AATTCTTTTCGAGAAAAAGGAATTATTGACTAGT
+      U3: TTACATTGCACAAGATAAAAATATATCATCATGA
+    dist_to_second_incomplete:                  # distance between end of transposable element end and position of secondary_incomplete sequence for U5 and U3 libraries
+      U5: 28
+      U3: 22
+    pbs:                                        # primer binding site (PBS) sequence to be filtered out for U5 and U3 libraries
+      U5: ATAACTGAACT
+      U3: TTGCCCTCCCC
+    tsd:                                        # length of target site duplication (TSD) in wild-type and frameshift integrase context
+      wt: 5
+      infs: 0
+    blastview: 6                                # view parameter for blast results. Modifying the output format might interfere with subsequent screening steps
     blastevalue: 0.05                           # evalue threshold for blast
     max_score_diff: 0.0001                      # evalue ratio threshold to assign a read to uniquely mapped or multi-location mapped
-    orf_map_interval: 100                       # length of outside-ORF intervals in histograms of distribution relative to ORF
-    avg_orf_length: 1500                        # average ORF length; will determine the number of within-ORF intervals
+    orf_map_interval: 100                       # length of intergenic intervals in histograms of distribution relative to ORF
+    avg_orf_length: 1500                        # average ORF length; will determine the number of within-ORF intervals in distribution relative to ORF
     orf_map_window: 5000                        # span of distance to plot in histograms of distribution relative to ORF
     genomedb:                                   # path to the different versions of genome fasta reference files
       1: database/2007/chr123.fas
@@ -570,9 +604,13 @@ Change log
 
 2020-10-29
 
+**v1.1**
+
 - Generalize steps to run HTtools on different plateforms
 
 2020-07-14
+
+**v1.0**
 
 - Added capability to run jobs in parallel on HPC
 - Screen out a list of positions to exclude
