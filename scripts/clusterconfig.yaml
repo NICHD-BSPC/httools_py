@@ -8,4 +8,4 @@ filterblast:
   prefix: "--time=8:00:00 --mem=16g"
 
 location:
-  prefix: "--time=12:00:00 --mem=16g"
+  prefix: "--time=12:00:00 --mem=16g --cpus-per-task=8"
