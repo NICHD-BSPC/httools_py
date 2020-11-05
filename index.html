@@ -282,6 +282,11 @@ documentation for details on these execution methods).</p>
 <h4>Running on a local system<a class="headerlink" href="#running-on-a-local-system" title="Permalink to this headline">¶</a></h4>
 <p>HTtools should be run on a system with at least (X CPU, Y RAM) due to the computational complexity.</p>
 <p>With the environment activated, navigate to the HTtools directory and run the workflow:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">snakemake</span> <span class="o">--</span><span class="n">config</span> <span class="n">fn</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">yaml</span> <span class="o">--</span><span class="n">cores</span><span class="o">=</span><span class="mi">1</span>
+</pre></div>
+</div>
+<p>Alternatively, to only trigger the re-run of rules affected by parameters that were modified in <code class="docutils literal notranslate"><span class="pre">config.yaml</span></code>, run
+the following:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>snakemake --config fn=config.yaml -R `snakemake --config fn=config.yaml --list-params-changes` --cores=1
 </pre></div>
 </div>
@@ -468,40 +473,35 @@ but can be adjusted to filter other sequences. The table below gives the specifi
 <p>Indicate <code class="docutils literal notranslate"><span class="pre">none</span></code> to disable a filter.</p>
 <table class="docutils align-default">
 <colgroup>
-<col style="width: 6%" />
-<col style="width: 2%" />
+<col style="width: 8%" />
 <col style="width: 22%" />
 <col style="width: 12%" />
 <col style="width: 7%" />
 <col style="width: 51%" />
 </colgroup>
 <thead>
-<tr class="row-odd"><th class="head" colspan="3"><p>Filter key     | Match position</p></th>
+<tr class="row-odd"><th class="head"><p>Filter key</p></th>
+<th class="head"><p>Match position</p></th>
 <th class="head"><p>Allowed mismatches</p></th>
 <th class="head"><p>Filtered out</p></th>
 <th class="head"><p>Purpose (exemple of Tf1)</p></th>
 </tr>
 </thead>
 <tbody>
-<tr class="row-even"><td colspan="3"><dl>
-<dt><code class="docutils literal notranslate"><span class="pre">plasmid</span></code>    | immediately after end of retrotransposon</dt><dd><div class="line-block">
-<div class="line"><br /></div>
-</div>
-</dd>
-</dl>
-</td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">plasmid</span></code></p></td>
+<td><p>immediately after end of retrotransposon</p></td>
 <td><p>yes, set with
 <code class="docutils literal notranslate"><span class="pre">allowed_mismatches</span></code></p></td>
 <td><p>yes</p></td>
 <td><p>screens out reads from amplification of donor plasmid</p></td>
 </tr>
-<tr class="row-odd"><td colspan="2"><p><code class="docutils literal notranslate"><span class="pre">pbs</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">pbs</span></code></p></td>
 <td><p>immediately after end of retrotransposon</p></td>
 <td><p>no</p></td>
 <td><p>yes</p></td>
 <td><p>screens out reads starting with Primer Binding Site (PBS), indicating RNA intermediate structure</p></td>
 </tr>
-<tr class="row-even"><td colspan="2"><p><code class="docutils literal notranslate"><span class="pre">primary_re</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">primary_re</span></code></p></td>
 <td><p>immediately or 1bp downstream end of
 transposon</p></td>
 <td><p>no</p></td>
@@ -509,14 +509,14 @@ transposon</p></td>
 <td><p>screens out reads starting with MseI restriction site (or 1bp downstream), indicating ligation
 of 2 restriction fragments and preventing accurate mapping</p></td>
 </tr>
-<tr class="row-odd"><td colspan="2"><p><code class="docutils literal notranslate"><span class="pre">ltrcircle</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">ltrcircle</span></code></p></td>
 <td><p>anywhere in trimmed sequence read*</p></td>
 <td><p>yes, set with
 <code class="docutils literal notranslate"><span class="pre">allowed_mismatches</span></code></p></td>
 <td><p>yes</p></td>
 <td><p>screens out abherant sequences resulting from LTR-circles</p></td>
 </tr>
-<tr class="row-even"><td colspan="2"><p><code class="docutils literal notranslate"><span class="pre">second_re</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">second_re</span></code></p></td>
 <td><p>specific distance from end of transposon,
 set with <code class="docutils literal notranslate"><span class="pre">dist_to_second_incomplete</span></code></p></td>
 <td><p>yes, set with
@@ -524,7 +524,7 @@ set with <code class="docutils literal notranslate"><span class="pre">dist_to_se
 <td><p>yes</p></td>
 <td><p>screens out incomplete secondary restriction digest, resulting in sequencing Tf1 internal sequences</p></td>
 </tr>
-<tr class="row-odd"><td colspan="2"><p><code class="docutils literal notranslate"><span class="pre">linker</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">linker</span></code></p></td>
 <td><p>anywhere in trimmed sequence read*</p></td>
 <td><p>yes, set with
 <code class="docutils literal notranslate"><span class="pre">allowed_mismatches</span></code></p></td>
@@ -534,9 +534,7 @@ purpose</p></td>
 </tr>
 </tbody>
 </table>
-<ul class="simple">
-<li><p>trimmed sequence read indicate trimmed of end of transposon reference sequence (in <code class="docutils literal notranslate"><span class="pre">sequence</span></code> of sample block)</p></li>
-</ul>
+<p><code class="docutils literal notranslate"><span class="pre">*</span></code> trimmed sequence read indicate trimmed of end of transposon reference sequence (in <code class="docutils literal notranslate"><span class="pre">sequence</span></code> of sample block)</p>
 <p>Exemple block:</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># -----------------------------------------------------------</span>
 <span class="c1"># Advanced parameters</span>
