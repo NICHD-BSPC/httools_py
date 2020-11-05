@@ -1,0 +1,6 @@
+env/
+env-sphinx/
+data/
+logs/
+*.log
+.snakemake/
