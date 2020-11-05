@@ -4,7 +4,7 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Documentation</title>
     <link rel="stylesheet" href="_static/better.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,23 +14,36 @@
     <script src="_static/doctools.js"></script>
     <script src="_static/language_data.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" />
-  
+    <link rel="search" title="Search" href="search.html" /> 
 
 
   <link href="https://fonts.googleapis.com/css?family=Lato|Lora|Oswald&display=swap" rel="stylesheet">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-      <link rel="stylesheet" href="_static/style.css" type="text/css" />
-  
-  
-  <style type="text/css">
-    ul.ablog-archive {list-style: none; overflow: auto; margin-left: 0px}
-    ul.ablog-archive li {float: left; margin-right: 5px; font-size: 80%}
-    ul.postlist a {font-style: italic;}
-    ul.postlist-style-disc {list-style-type: disc;}
-    ul.postlist-style-none {list-style-type: none;}
-    ul.postlist-style-circle {list-style-type: circle;}
-  </style>
+      <link rel="stylesheet" href="_static/style.css" type="text/css" />  
+<style type="text/css">
+  ul.ablog-archive {
+    list-style: none;
+    overflow: auto;
+    margin-left: 0px;
+  }
+  ul.ablog-archive li {
+    float: left;
+    margin-right: 5px;
+    font-size: 80%;
+  }
+  ul.postlist a {
+    font-style: italic;
+  }
+  ul.postlist-style-disc {
+    list-style-type: disc;
+  }
+  ul.postlist-style-none {
+    list-style-type: none;
+  }
+  ul.postlist-style-circle {
+    list-style-type: circle;
+  }
+</style>
 
   </head><body>
     <header id="pageheader"><h1><a href="# ">
@@ -52,8 +65,7 @@
       <div class="documentwrapper">
         <div class="bodywrapper">
           <div class="body" role="main">
-            
-  <div class="section" id="documentation">
+             <div class="section" id="documentation">
 <h1>Documentation<a class="headerlink" href="#documentation" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="httools">
 <h2>HTtools<a class="headerlink" href="#httools" title="Permalink to this headline">¶</a></h2>
@@ -68,16 +80,17 @@ homologous recombination sites. Uniquely mapped reads are positionned
 relative to ORF.</p>
 <p>The full processing pipeline is included in a Snakefile and can be
 configured using a config yaml file. Upon success, an html summary file
-is generated. It contains interactive graphs of integration genomic
-distribution, ORF-maps, heatmap of the most targeted regions and links
-to the output TSV files.</p>
+is generated. It contains interactive histograms of integration genomic
+distribution, distribution relative to ORFs, heatmap of the most targeted
+regions and links to the output TSV files.</p>
 <p>Modification of the config.yaml file and rerun of the pipeline will only
 trigger the rerun of affected rules.</p>
 <p>Each individual step scripts can also be run independently by command
 line.</p>
-<p><em>S. pombe</em> genome references and parameters are included in HTtools by
+<p>A set of <em>S. pombe</em> genome references and parameters are included in HTtools by
 default. Other genomes can be added to the <code class="docutils literal notranslate"><span class="pre">database</span></code> directory and specifying
-the paths in the config.yaml file.</p>
+the paths in the config.yaml file. See section <span class="xref std std-ref">Adding custom genome, annotation
+and homologous recombination references</span>.</p>
 <p>Four versions of <em>S. pombe</em> genome are currently included:</p>
 <ul class="simple">
 <li><p>2008 release</p></li>
@@ -89,12 +102,18 @@ the paths in the config.yaml file.</p>
 well as integrase-frameshift and native integrase.</p>
 <p>Parameters that are typical of the Tf1 retrotransposon are used in the
 <code class="docutils literal notranslate"><span class="pre">test/config/config_*.yaml</span></code> configuration files.</p>
+<p>For long-term reproducibility, it is recommended to set up a copy of the HTtools
+directory per project and to use an environment manager such as conda
+(<a class="reference external" href="https://bioconda.github.io/">bioconda</a>)
+to install the dependencies required. We recommend creating such an environment
+in each project directory. This allows the versions of all installed packages to
+be maintained independently of any other projects or software on the system.</p>
 <div class="section" id="httools-github-repository">
 <h3>HTtools Github repository<a class="headerlink" href="#httools-github-repository" title="Permalink to this headline">¶</a></h3>
-<p>The Github repository can be found at <a class="reference external" href="https://github.com/NICHD-BSPC/httools_py">https://github.com/NICHD-BSPC/httools_py</a>.</p>
+<p>The Github repository can be found at <a class="reference external" href="https://github.com/NICHD-BSPC/httools">https://github.com/NICHD-BSPC/httools</a>.</p>
 <p>Either download the zip file or clone the repository with <code class="docutils literal notranslate"><span class="pre">git</span></code> by
 navigating to the location where you want to clone HTtools and</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="n">git</span><span class="nd">@github</span><span class="o">.</span><span class="n">com</span><span class="p">:</span><span class="n">NICHD</span><span class="o">-</span><span class="n">BSPC</span><span class="o">/</span><span class="n">httools_py</span><span class="o">.</span><span class="n">git</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="n">git</span><span class="nd">@github</span><span class="o">.</span><span class="n">com</span><span class="p">:</span><span class="n">NICHD</span><span class="o">-</span><span class="n">BSPC</span><span class="o">/</span><span class="n">httools</span><span class="o">.</span><span class="n">git</span>
 </pre></div>
 </div>
 </div>
@@ -114,13 +133,14 @@ Otherwise, install <a class="reference external" href="https://conda.io/minicond
 HTtools directory. It needs to be activated any time you’ll be working
 with this workflow. It is recommended to use the <code class="docutils literal notranslate"><span class="pre">-p</span></code> option to create
 the environment in the current directory. This makes it easier to track
-the environment used for each project.</p>
+the environment used for each project. HTtools has been implemented and tested
+in Linux and MacOS environments. Other plateforms are not currently supported.</p>
 <p>Navigate to your HTtools directory.</p>
-<p>If you are on Linux, create the environment:</p>
+<p>In a Linux system, create the environment:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="n">env</span> <span class="n">create</span> <span class="o">-</span><span class="n">p</span> <span class="n">env</span><span class="o">/</span> <span class="o">--</span><span class="n">file</span> <span class="n">requirements</span><span class="o">-</span><span class="n">linux</span><span class="o">.</span><span class="n">yaml</span>
 </pre></div>
 </div>
-<p>If you are on macOS, create the environment:</p>
+<p>In a MacOS system, create the environment:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="n">env</span> <span class="n">create</span> <span class="o">-</span><span class="n">p</span> <span class="n">env</span><span class="o">/</span> <span class="o">--</span><span class="n">file</span> <span class="n">requirements</span><span class="o">-</span><span class="n">macos</span><span class="o">.</span><span class="n">yaml</span>
 </pre></div>
 </div>
@@ -145,7 +165,6 @@ non Serial Number test datasets, and compare the output files to the
 expected outputs. This ensure reproducibility by verifying that the
 current tools and packages versions are giving the expected results.
 This needs to be done only once after installation.</p>
-<p>Note: if you are running on Biowulf, run this in an interactive session.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">bash</span> <span class="n">test_snakemake</span><span class="o">.</span><span class="n">sh</span>
 </pre></div>
 </div>
@@ -158,39 +177,61 @@ expected results, the following error message will be displayed</p>
 <blockquote>
 <div><p>Error(s) found, see test/diff-test-screen-full.log</p>
 </div></blockquote>
-<p>Contact the Bioinformatics core for assistance.</p>
+<p>The differences found between the expected and the newly
+generated test results are listed in the file <code class="docutils literal notranslate"><span class="pre">test/diff-test-screen-full.log</span></code>
+for debugging.</p>
 </div>
 </div>
 <div class="section" id="configuring-the-workflow">
 <h3>Configuring the workflow<a class="headerlink" href="#configuring-the-workflow" title="Permalink to this headline">¶</a></h3>
-<p>All sample information and workflow configurations are indicated in the
-config.yaml file.</p>
-<p>The following fields need to be adjusted to individual runs:</p>
-<ul>
-<li><p><code class="docutils literal notranslate"><span class="pre">name</span></code> experiment name. Should be unique since all results will be
-stored in a directory labelled with that name</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">fastq</span></code> list of path(s) to the fastq file(s). Path(s) can be either
-absolute or relative to the config file. Can be a .gz file</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">sample</span></code> block: The sample block must be copied for each sample in
-the fastq files (typically for each barcode). It must start with a
-unique name and contains the fields:</p>
+<p>Create a configuration file <code class="docutils literal notranslate"><span class="pre">config.yaml</span></code> in the HTtools project directory.
+Two templates <code class="docutils literal notranslate"><span class="pre">config-Tf1.yaml</span></code> and <code class="docutils literal notranslate"><span class="pre">config-Hermes.yaml</span></code> are included
+as examples, containing default parameters typical of Tf1 and Hermes respectively.</p>
+<p>Adjust the parameters to match your experiment design.</p>
+<p>All sample information and workflow configurations are specified in the
+<code class="docutils literal notranslate"><span class="pre">config.yaml</span></code> file.</p>
+<p>The following fields need to be adjusted for each individual run:</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">barcode_start</span></code> position in the sequence reads where the barcode
-starts</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">barcode_length</span></code> lenght of the barcode in nulceotides</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">sequence</span></code> expected sequence, from the barcode (included) to the
+<li><p><code class="docutils literal notranslate"><span class="pre">name</span></code> experiment name. Should be unique in the project directory to avoid
+overwritting of results. All results will be stored in a directory labelled <code class="docutils literal notranslate"><span class="pre">data/{name}</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">fastq</span></code> list of path(s) to the fastq file(s). Path(s) are relative to the HTtools directory.
+Can be a .gz file</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">sample</span></code> block: The sample block must be copied for each sample
+(typically for each barcode). It must start with a unique name and contains the fields:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">barcode_start</span></code> position in the sequence reads of the barcode
+start. Indicate <code class="docutils literal notranslate"><span class="pre">none</span></code> in absence of barcode.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">barcode_length</span></code> lenght of the barcode. Indicate <code class="docutils literal notranslate"><span class="pre">none</span></code> in absence of barcode.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">sequence</span></code> expected sequence, from the barcode (included, if applicable) to the
 end of the LTR. Note: if a Serial Number is included, it must be
-indicated with <code class="docutils literal notranslate"><span class="pre">x</span></code>s</p></li>
+indicated with <code class="docutils literal notranslate"><span class="pre">x</span></code>s.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">integrase</span></code> whether the integrase was native (<code class="docutils literal notranslate"><span class="pre">wt</span></code>) or
-frameshift (<code class="docutils literal notranslate"><span class="pre">fs</span></code>)</p></li>
+frameshift (<code class="docutils literal notranslate"><span class="pre">fs</span></code>). This matters for shifting / not shifting the coordinates by the
+length of the Target Site Duplication (TSD).</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">lib_design</span></code> whether the sequence reads originate from the
-<code class="docutils literal notranslate"><span class="pre">U5</span></code> or the <code class="docutils literal notranslate"><span class="pre">U3</span></code> end of the retrotransposon</p></li>
+<code class="docutils literal notranslate"><span class="pre">U5</span></code> (downstream) or the <code class="docutils literal notranslate"><span class="pre">U3</span></code> (upstream) end of the retrotransposon.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">SN_position</span></code> (optional) start position of the Serial Number,
-indicate ‘na’ if no SN was used</p></li>
+indicate ‘none’ if no SN was used.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">SN_length</span></code> (optional) length of the Serial Number, indicate
-‘na’ if no SN was used</p></li>
+‘none’ if no SN was used.</p></li>
 </ul>
 </li>
+</ul>
+<p>Exemple block:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">sample</span><span class="p">:</span>
+    <span class="c1"># sample block ----------------------------------------------</span>
+    <span class="nt">BC3498full</span><span class="p">:</span>
+        <span class="nt">barcode_start</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span>
+        <span class="nt">barcode_length</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">4</span>
+        <span class="nt">sequence</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">CTCACCGCAGTTGATGCATAGGAAGCCxxxxxxxxCAAACTGCGTAGCTAACA</span>
+        <span class="nt">integrase</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">wt</span>
+        <span class="nt">lib_design</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">U5</span>
+        <span class="nt">SN_position</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">28</span>
+        <span class="nt">SN_length</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">8</span>
+    <span class="c1"># sample block ----------------------------------------------</span>
+</pre></div>
+</div>
+<ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">genome</span></code> genome built. Current available options are:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">1</span></code>: 2008 release</p></li>
@@ -200,23 +241,27 @@ pHL2882</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">4</span></code>: 2012 release plus the sequence of the expression plasmid
 pHL2882</p></li>
 </ul>
+<p>Additional genome references can be added. See section
+<span class="xref std std-ref">Adding custom genome, annotation and homologous recombination references</span>.</p>
 </li>
 <li><p><code class="docutils literal notranslate"><span class="pre">generate_uncollapsed</span></code> whether to output (<code class="docutils literal notranslate"><span class="pre">True</span></code>) or not
-(<code class="docutils literal notranslate"><span class="pre">False</span></code>) fastas of trimmed sequence reads corresponding to the
+(<code class="docutils literal notranslate"><span class="pre">False</span></code>) fastas of trimmed sequence reads corresponding to the positions in the
 integration files. Sequences are trimmed after the end of the LTR and
 are replicated as many times as there were duplicate sequence reads.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">exclude</span></code>  positions to exclude, in the format
-chromosome_coordinate_orientation, i.e. <a href="#id2"><span class="problematic" id="id3">chr1_240580_</span></a>-</p>
+chromosome_coordinate_orientation, i.e. <code class="docutils literal notranslate"><span class="pre">chr1_240580_-</span></code></p>
 <p>Those positions will be screened out from the true_integrations
 and written in <code class="docutils literal notranslate"><span class="pre">data/{name}/location/excluded/</span></code> for reference.</p>
-<p>Indicate ‘na’ if no position to exclude</p>
+<p>Indicate ‘none’ if no position should be excluded.</p>
 </li>
 </ul>
-<p>Advanced parameters include legacy_mode, reference sequences used for
-screening, blast parameters, and are also specified in the config.yaml
-file. Those parameters do not typically need to be modified. See the
-exemple files <code class="docutils literal notranslate"><span class="pre">test/config/config_nonSN.yaml</span></code> and
-<code class="docutils literal notranslate"><span class="pre">test/config/config_SN.yaml</span></code> for details.</p>
+<p>Advanced parameters include legacy_mode (see section <span class="xref std std-ref">legacy_mode changes</span>
+for details), reference sequences used for screening, blast parameters, and are also specified in
+the <code class="docutils literal notranslate"><span class="pre">config.yaml</span></code> file. Those parameters do not typically need to be modified between experiements
+as long as the experimental design remains identical. See the section <span class="xref std std-ref">Default advanced
+parameters</span>, as well as the example files located in <code class="docutils literal notranslate"><span class="pre">test/config/</span></code> and
+the templates <code class="docutils literal notranslate"><span class="pre">config-Tf1.yaml</span></code> and <code class="docutils literal notranslate"><span class="pre">config-Hermes.yaml</span></code> for more details.</p>
+<p>Indicate <cite>none</cite> in a filtering step parameter to skip this filtering step.</p>
 </div>
 <div class="section" id="running-the-workflow">
 <h3>Running the workflow<a class="headerlink" href="#running-the-workflow" title="Permalink to this headline">¶</a></h3>
@@ -230,36 +275,59 @@ exemple files <code class="docutils literal notranslate"><span class="pre">test/
 <li><p>(optional) creation of fasta files containing reads that correspond
 to the integration files</p></li>
 </ul>
-<p>With the environment activated, navigate to the <code class="docutils literal notranslate"><span class="pre">httools_py</span></code> directory
-and run the workflow:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">bash</span> <span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">start_HTtools</span><span class="o">.</span><span class="n">sh</span> <span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">config</span><span class="o">.</span><span class="n">yaml</span>
+<p>Since HTtools is based on Snakemake, the entire workflow can be executed on a single machine,
+submitted to a cluster, or run on cloud platforms (see the <a class="reference external" href="https://snakemake.readthedocs.io/">Snakemake</a>
+documentation for details on these execution methods).</p>
+<div class="section" id="running-on-a-local-system">
+<h4>Running on a local system<a class="headerlink" href="#running-on-a-local-system" title="Permalink to this headline">¶</a></h4>
+<p>HTtools should be run on a system with at least (X CPU, Y RAM) due to the computational complexity.</p>
+<p>With the environment activated, navigate to the HTtools directory and run the workflow:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>snakemake --config fn=config.yaml -R `snakemake --config fn=config.yaml --list-params-changes` --cores=1
 </pre></div>
 </div>
-<p>For exemple, from the HTtools directory, with a config file called
-<code class="docutils literal notranslate"><span class="pre">config_nonSN.yaml</span></code> and located in HTtools test/config directory:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">bash</span> <span class="n">start_HTtools</span><span class="o">.</span><span class="n">sh</span> <span class="n">test</span><span class="o">/</span><span class="n">config</span><span class="o">/</span><span class="n">config_nonSN</span><span class="o">.</span><span class="n">yaml</span>
-</pre></div>
-</div>
-<p>The config.yaml file is a required argument.</p>
-<p>Upon success, results can be found in your config.yaml file directory
-under <code class="docutils literal notranslate"><span class="pre">data/{name}</span></code> where <code class="docutils literal notranslate"><span class="pre">name</span></code> is the experiment name provided in
-the config.yaml file. See section <span class="xref std std-ref">Output files of interest</span>
+<p>Notes:</p>
+<ul class="simple">
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">--config</span> <span class="pre">fn=config.yaml</span></code> indicates the location of your configuration file. This is assuming a file named</dt><dd><p><code class="docutils literal notranslate"><span class="pre">config.yaml</span></code> in the HTtools directory. This is a requirement argument.</p>
+</dd>
+</dl>
+</li>
+<li><p>the command <code class="docutils literal notranslate"><span class="pre">snakemake</span> <span class="pre">--config</span> <span class="pre">fn=config.yaml</span> <span class="pre">--list-params-changes</span></code> lists the files affected by any parameter
+changes done in the <code class="docutils literal notranslate"><span class="pre">config.yaml</span></code> file since the last snakemake execution. <code class="docutils literal notranslate"><span class="pre">-R</span></code> triggers the rules that produce
+those files, effectively re-processing and updating any result file dependent of the changed parameters.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--cores=1</span></code> sets the number of cores used by the workflow to 1. <code class="docutils literal notranslate"><span class="pre">--cores=1</span></code> will work on any system; optionally adjust the
+number of cores according to your system’s specifications for optimized speed.</p></li>
+<li><p>log and error messages are indicated within the <code class="docutils literal notranslate"><span class="pre">Snakefile.log</span></code></p></li>
+</ul>
+<p>Upon success, results can be found in the directory <code class="docutils literal notranslate"><span class="pre">data/{name}</span></code> where <code class="docutils literal notranslate"><span class="pre">name</span></code> is the experiment name provided in
+the <code class="docutils literal notranslate"><span class="pre">config.yaml</span></code> file. See section <span class="xref std std-ref">Output files of interest</span>
 for details.</p>
 <p>An error is raised and the workflow is aborted when a sample does not return any read.
 This is generally due to an error in the sequences specified in the <code class="docutils literal notranslate"><span class="pre">config.yaml</span></code> file.
 A modified fastqscreen log file <code class="docutils literal notranslate"><span class="pre">data/logs/fastq_screen_{name}_{sample}.error.txt</span></code> is generated and contains
 the number of reads passing / blocked by each of the sequence filters for debugging.</p>
-<p>The workflow is set up to automatically run up to 4 parallel jobs on
-Biowulf HPC. Adjust <code class="docutils literal notranslate"><span class="pre">start_HTtools.sh</span></code> to your <cite>$HOSTNAME</cite> if you are running on a different HPC.
-When running parallel jobs, the error messages are not indicated within the <code class="docutils literal notranslate"><span class="pre">Snakefile.log</span></code>
-file but can rather be found in <code class="docutils literal notranslate"><span class="pre">logs/{rule.name}.{jobID}.e</span></code>.</p>
+</div>
+<div class="section" id="running-on-a-slurm-cluster">
+<h4>Running on a SLURM cluster<a class="headerlink" href="#running-on-a-slurm-cluster" title="Permalink to this headline">¶</a></h4>
+<p>Optionally HTtools can be run on a cluster. A wrapper file is included for running on a SLURM cluster. Other
+types of clusters are not currently supported.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sbatch</span> <span class="o">--</span><span class="n">cpus</span><span class="o">-</span><span class="n">per</span><span class="o">-</span><span class="n">task</span><span class="o">=</span><span class="mi">4</span> <span class="n">scripts</span><span class="o">/</span><span class="n">WRAPPER_SLURM</span> <span class="n">config</span><span class="o">.</span><span class="n">yaml</span>
+</pre></div>
+</div>
+<p>Notes:</p>
+<ul class="simple">
+<li><p>adjust the number of <code class="docutils literal notranslate"><span class="pre">--cpus-per-task</span></code> to your system’s specifications.</p></li>
+<li><p>when running parallel jobs, log and error messages are not indicated within the <code class="docutils literal notranslate"><span class="pre">Snakefile.log</span></code></p></li>
+</ul>
+<p>file but can rather be found in <code class="docutils literal notranslate"><span class="pre">logs/{rule.name}.{jobID}.e</span></code>.</p>
+</div>
 </div>
 <div class="section" id="running-individual-scripts">
 <h3>Running individual scripts<a class="headerlink" href="#running-individual-scripts" title="Permalink to this headline">¶</a></h3>
 <p>Alternatively, scripts for the individual steps can be run
 independently. See individual scripts code for usage.</p>
-<p>This can be useful for exemple to position the multimatch integrations
-relative to ORFs. In this exemple, an multimatch integration file is
+<p>This can be useful for example to position the multimatch integrations
+relative to ORFs. In this example, a multimatch integration file is
 processed through the location step. From the HTtools directory:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">scripts</span><span class="o">/</span><span class="n">location</span><span class="o">.</span><span class="n">py</span> <span class="o">--</span><span class="n">integration</span> <span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">data</span><span class="o">/</span><span class="p">{</span><span class="n">name</span><span class="p">}</span><span class="o">/</span><span class="n">filterblast</span><span class="o">/</span><span class="n">integration_multimatch_file</span><span class="o">.</span><span class="n">txt</span>
 <span class="o">--</span><span class="n">config</span> <span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">config</span><span class="o">.</span><span class="n">yaml</span>
@@ -273,6 +341,31 @@ processed through the ORFmap step. From the HTtools directory:</p>
 </div>
 <p>(please note the <code class="docutils literal notranslate"><span class="pre">../</span></code> in the output and params arguments, the paths
 must be relative to the results.Rmd file)</p>
+</div>
+<div class="section" id="adding-custom-genome-annotation-and-homologous-recombination-references">
+<h3>Adding custom genome, annotation and homologous recombination references<a class="headerlink" href="#adding-custom-genome-annotation-and-homologous-recombination-references" title="Permalink to this headline">¶</a></h3>
+<p>The pipeline contains by default a set of S. pombe releases. Adding new references can be done
+by following the steps below.</p>
+<p>Create a custom genome database from a reference fasta file using the tool <code class="docutils literal notranslate"><span class="pre">makeblastdb</span></code>
+from the NCBI BLAST+ tool suite ([Camacho_et_al.,2009]_). <code class="docutils literal notranslate"><span class="pre">makeblastdb</span></code> is included in the environment.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">makeblastdb</span> <span class="o">-</span><span class="ow">in</span> <span class="p">{</span><span class="n">genome</span><span class="o">.</span><span class="n">fasta</span><span class="p">}</span> <span class="o">-</span><span class="n">out</span> <span class="p">{</span><span class="n">genome</span><span class="o">.</span><span class="n">fas</span><span class="p">}</span> <span class="o">-</span><span class="n">dbtype</span> <span class="n">nucl</span> <span class="o">-</span><span class="n">logfile</span> <span class="n">logfile</span><span class="o">.</span><span class="n">txt</span>
+</pre></div>
+</div>
+<p>A BED6-formated file can be used as custom annotation file. BED6 contains the columns
+chrom, chromStart, chromEnd, name, score, strand. The score is not used by the pipeline and can be
+set to any value.</p>
+<p>Copy the created <a href="#id1"><span class="problematic" id="id2">*</span></a>.nhr, <a href="#id3"><span class="problematic" id="id4">*</span></a>.nin, <a href="#id5"><span class="problematic" id="id6">*</span></a>.nsq files, fasta and annotation files
+to the directory <code class="docutils literal notranslate"><span class="pre">HTtools/database/{new_database_name}</span></code>.</p>
+<p>Update the paths to <code class="docutils literal notranslate"><span class="pre">genomedb</span></code> and <code class="docutils literal notranslate"><span class="pre">genomecds</span></code> in the Advanced parameters section of the
+YAML configuration file accordingly.</p>
+<p>A custom version of a retrotransposon preexisting insertions can be used to detect possible homologous
+recombination. Prepare BED6-formated files corresponding to the 3’ terminal repeat outmost coordinate (U5),
+to the 5’ terminal repeat outmost coordinates (U3) and to single repeats (solo-LTR) that originated from
+excision of a retrotransposon. Note that the outmost coordinate corresponds to the 3’ extremity if the library
+was sequenced from U5 or to the 5’ extremity if the library was sequenced from U3. Copy those files to
+the directory <code class="docutils literal notranslate"><span class="pre">HTtools/database/{new_preexisiting_coordinates_name}</span></code>.</p>
+<p>Update the paths to <code class="docutils literal notranslate"><span class="pre">preexist_ltr</span></code> in the Advanced parameters section of the
+YAML configuration file accordingly.</p>
 </div>
 <div class="section" id="output-files-of-interest">
 <h3>Output files of interest<a class="headerlink" href="#output-files-of-interest" title="Permalink to this headline">¶</a></h3>
@@ -303,7 +396,14 @@ intervals upstream, downstream and within ORFs.</p></li>
 <div class="section" id="legacy-mode-changes">
 <h3>legacy_mode changes<a class="headerlink" href="#legacy-mode-changes" title="Permalink to this headline">¶</a></h3>
 <p>When <code class="docutils literal notranslate"><span class="pre">legacy_mode</span></code> is set to <code class="docutils literal notranslate"><span class="pre">True</span></code> in the config.yaml, the pipeline
-follows the behavior of the original perl scripts.</p>
+follows the behavior of the HTtools perl scripts suite <a class="reference internal" href="#esnault-et-al-2019" id="id7"><span>[Esnault_et_al_2019]</span></a> on which
+HTtools_py was based.</p>
+<dl class="citation">
+<dt class="label" id="esnault-et-al-2019"><span class="brackets"><a class="fn-backref" href="#id7">Esnault_et_al_2019</a></span></dt>
+<dd><p>Esnault C., Lee M., Ham C, Levin L. Transposable element insertions
+in fission yeast drive adaptation to environmental stress. <a class="reference external" href="https://doi.org/10.1101/gr.239699.118">https://doi.org/10.1101/gr.239699.118</a></p>
+</dd>
+</dl>
 <div class="section" id="fastqscreen">
 <h4>fastqscreen<a class="headerlink" href="#fastqscreen" title="Permalink to this headline">¶</a></h4>
 <p>The perl scripts <code class="docutils literal notranslate"><span class="pre">screen_illumina_Tf1_sequence-1.0.pl</span></code> and
@@ -338,7 +438,7 @@ with <code class="docutils literal notranslate"><span class="pre">legacy_mode=Fa
 <div class="section" id="notes">
 <h3>Notes<a class="headerlink" href="#notes" title="Permalink to this headline">¶</a></h3>
 <div class="section" id="fastqscreen-1">
-<span id="id1"></span><h4>fastqscreen<a class="headerlink" href="#fastqscreen-1" title="Permalink to this headline">¶</a></h4>
+<span id="id8"></span><h4>fastqscreen<a class="headerlink" href="#fastqscreen-1" title="Permalink to this headline">¶</a></h4>
 <p>The sequences characteristic of SpeI incomplete are located ~70 bp from
 the begining of the sequence reads. The SpeI incomplete sequence would
 partially fall outside of the sequence read when the sequencing length
@@ -359,9 +459,116 @@ categories but does not affect whether a read is filtered out. This
 behavior is conserved in python when <code class="docutils literal notranslate"><span class="pre">legacy_mode=False</span></code>.</p>
 </div>
 </div>
+<div class="section" id="default-advanced-parameters">
+<h3>Default advanced parameters<a class="headerlink" href="#default-advanced-parameters" title="Permalink to this headline">¶</a></h3>
+<p>HTtools performs a series of filtering steps on the sequence reads that are defined in the
+Advanced parameters section of the <code class="docutils literal notranslate"><span class="pre">config.yaml</span></code> file. Those filters were
+developed to screen out reads that were non-specific of <em>bona-fide</em> Tf1 integrations,
+but can be adjusted to filter other sequences. The table below gives the specifics of each filter.</p>
+<p>Indicate <code class="docutils literal notranslate"><span class="pre">none</span></code> to disable a filter.</p>
+<ul class="simple">
+<li><p>trimmed sequence read indicate trimmed of end of transposon reference sequence (in <code class="docutils literal notranslate"><span class="pre">sequence</span></code> of sample block)</p></li>
+</ul>
+<p>Exemple block:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># -----------------------------------------------------------</span>
+<span class="c1"># Advanced parameters</span>
+<span class="c1"># -----------------------------------------------------------</span>
+<span class="c1"># Those parameters do not typically need to be modified.</span>
+<span class="c1"># Filters against linker, ltrcircle, plasmid, primary_incomplete,</span>
+<span class="c1"># second_incomplete and pbs are optional. Indicate &#39;none&#39; to skip</span>
+<span class="c1"># those filters.</span>
+<span class="nt">legacy_mode</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">False</span>                          <span class="c1"># whether to enable legacy_mode</span>
+<span class="nt">length_to_match</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">34</span>                         <span class="c1"># length of the end of transposon and of filtering sequences that will be matched to sequence reads during fastq filtering</span>
+<span class="nt">min_length</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">14</span>                              <span class="c1"># minimum length for trimmed reads to be processed</span>
+<span class="nt">allowed_mismatches</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2</span>                       <span class="c1"># number of mismatches allowed when filtering fastqs for end of transposon, and ltrcircle, second_re and linker filters</span>
+<span class="nt">linker</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">TAGTCCCTTAAGCGGAG</span>                   <span class="c1"># linker sequence to be filtered out</span>
+<span class="nt">ltrcircle</span><span class="p">:</span>                                  <span class="c1"># sequence of terminal-repeat circle to be filtered out for U5 and U3 libraries</span>
+  <span class="nt">U5</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">TGTCAGCAATACTAGCAGCATGGCTGATACACTA</span>
+  <span class="nt">U3</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">TGTTAGCTACGCAGTTACCATAAACTAAATTCCT</span>
+<span class="nt">plasmid</span><span class="p">:</span>                                    <span class="c1"># sequence of donor plasmid to be filtered out for U5 and U3 libraries</span>
+  <span class="nt">U5</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">GAAGTAAATGAAATAACGATCAACTTCATATCAA</span>
+  <span class="nt">U3</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">none</span>
+<span class="nt">primary_re</span><span class="p">:</span>                                 <span class="c1"># name of primary restriction enzyme for U5 and U3 libraries</span>
+  <span class="nt">U5</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">MseI</span>
+  <span class="nt">U3</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">MseI</span>
+<span class="nt">primary_incomplete</span><span class="p">:</span>                         <span class="c1"># sequence of primary restriction site to be filtere out for U5 and U3 libraries</span>
+  <span class="nt">U5</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">TTAA</span>
+  <span class="nt">U3</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">TTAA</span>
+<span class="nt">second_re</span><span class="p">:</span>                                  <span class="c1"># name of secondary restriction enzyme for U5 and U3 libraries</span>
+  <span class="nt">U5</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">SpeI</span>
+  <span class="nt">U3</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">BspHI</span>
+<span class="nt">second_incomplete</span><span class="p">:</span>                          <span class="c1"># sequence of secondary restriction site to be filtere out for U5 and U3 libraries</span>
+  <span class="nt">U5</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">AATTCTTTTCGAGAAAAAGGAATTATTGACTAGT</span>
+  <span class="nt">U3</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">TTACATTGCACAAGATAAAAATATATCATCATGA</span>
+<span class="nt">dist_to_second_incomplete</span><span class="p">:</span>                  <span class="c1"># distance between end of transposable element end and position of secondary_incomplete sequence for U5 and U3 libraries</span>
+  <span class="nt">U5</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">28</span>
+  <span class="nt">U3</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">22</span>
+<span class="nt">pbs</span><span class="p">:</span>                                        <span class="c1"># primer binding site (PBS) sequence to be filtered out for U5 and U3 libraries</span>
+  <span class="nt">U5</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">ATAACTGAACT</span>
+  <span class="nt">U3</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">TTGCCCTCCCC</span>
+<span class="nt">tsd</span><span class="p">:</span>                                        <span class="c1"># length of target site duplication (TSD) in wild-type and frameshift integrase context</span>
+  <span class="nt">wt</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">5</span>
+  <span class="nt">infs</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0</span>
+<span class="nt">blastview</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">6</span>                                <span class="c1"># view parameter for blast results. Modifying the output format might interfere with subsequent screening steps</span>
+<span class="nt">blastevalue</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.05</span>                           <span class="c1"># evalue threshold for blast</span>
+<span class="nt">max_score_diff</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.0001</span>                      <span class="c1"># evalue ratio threshold to assign a read to uniquely mapped or multi-location mapped</span>
+<span class="nt">orf_map_interval</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">100</span>                       <span class="c1"># length of intergenic intervals in histograms of distribution relative to ORF</span>
+<span class="nt">avg_orf_length</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1500</span>                        <span class="c1"># average ORF length; will determine the number of within-ORF intervals in distribution relative to ORF</span>
+<span class="nt">orf_map_window</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">5000</span>                        <span class="c1"># span of distance to plot in histograms of distribution relative to ORF</span>
+<span class="nt">genomedb</span><span class="p">:</span>                                   <span class="c1"># path to the different versions of genome fasta reference files</span>
+  <span class="nt">1</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">database/2007/chr123.fas</span>
+  <span class="nt">2</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">database/2012_ASM294v2/chr123.fas</span>
+  <span class="nt">3</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">database/2007_with_pHL2882/chr123pHL2882.fas</span>
+  <span class="nt">4</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">database/2012_ASM294v2_pHL2882/chr123pHL2882.fas</span>
+<span class="nt">genomevs</span><span class="p">:</span>                                   <span class="c1"># name of the different versions of genome fasta reference files</span>
+  <span class="nt">1</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">v07str</span>
+  <span class="nt">2</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">v12str</span>
+  <span class="nt">3</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">v07pHL</span>
+  <span class="nt">4</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">v12pHL</span>
+<span class="nt">preexist_ltr</span><span class="p">:</span>                               <span class="c1"># path to the annotation files for homologous recombination screening, for U5 and U3 libraries</span>
+  <span class="nt">U5</span><span class="p">:</span>
+    <span class="nt">ltr5</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">database/LTR_2012_ASM294v2/Tf2_5_LTR.txt</span>
+    <span class="nt">ltr3</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">database/LTR_2012_ASM294v2/Tf2_3_LTR.txt</span>
+    <span class="nt">sololtr</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">database/LTR_2012_ASM294v2/solo_LTR.txt</span>
+  <span class="nt">U3</span><span class="p">:</span>
+    <span class="nt">ltr5</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">database/LTR_2012_ASM294v2/Tf2_5_LTR-U3.txt</span>
+    <span class="nt">ltr3</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">database/LTR_2012_ASM294v2/Tf2_3_LTR-U3.txt</span>
+    <span class="nt">sololtr</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">database/LTR_2012_ASM294v2/solo_LTR-U3.txt</span>
+<span class="nt">genomecds</span><span class="p">:</span>                                  <span class="c1"># path to the different versions of annotation reference files</span>
+  <span class="nt">1</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">database/2007/cds.txt</span>
+  <span class="nt">2</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">database/2012_ASM294v2/cds.txt</span>
+  <span class="nt">3</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">database/2007_with_pHL2882/cds.txt</span>
+  <span class="nt">4</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">database/2012_ASM294v2_pHL2882/cds.txt</span>
+<span class="c1"># List of chromosomes of interest</span>
+<span class="c1"># The integration log file will give for infomration purpose the count within each chromosome</span>
+<span class="c1"># in the reference genome, but only the chromosomes from the list below will be included</span>
+<span class="c1"># in the output files integration, intergenic, ORF, location, ORFmap, logoDNA</span>
+<span class="nt">chro_listvs</span><span class="p">:</span>
+  <span class="nt">1</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">short_chro_list</span>
+  <span class="nt">2</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">full_chro_list</span>
+  <span class="nt">3</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">short_chro_list</span>
+  <span class="nt">4</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">full_chro_list</span>
+<span class="nt">full_chro_list</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">chr1</span>
+  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">chr2</span>
+  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">chr3</span>
+  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">AB325691</span>
+<span class="nt">short_chro_list</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">chr1</span>
+  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">chr2</span>
+  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">chr3</span>
+</pre></div>
+</div>
+</div>
 <div class="section" id="change-log">
 <h3>Change log<a class="headerlink" href="#change-log" title="Permalink to this headline">¶</a></h3>
+<p>2020-10-29</p>
+<p><strong>v1.1</strong></p>
+<ul class="simple">
+<li><p>Generalize steps to run HTtools on different plateforms</p></li>
+</ul>
 <p>2020-07-14</p>
+<p><strong>v1.0</strong></p>
 <ul class="simple">
 <li><p>Added capability to run jobs in parallel on HPC</p></li>
 <li><p>Screen out a list of positions to exclude</p></li>
@@ -395,10 +602,9 @@ blast bit scores</p></li>
 </div>
 </div>
 
-  <div class="section">
-  
-  
-  </div>
+<div class="section">
+   
+</div>
 
             <div class="clearer"></div>
           </div>
@@ -418,8 +624,13 @@ blast bit scores</p></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#configuring-the-workflow">Configuring the workflow</a></li>
-<li><a class="reference internal" href="#running-the-workflow">Running the workflow</a></li>
+<li><a class="reference internal" href="#running-the-workflow">Running the workflow</a><ul>
+<li><a class="reference internal" href="#running-on-a-local-system">Running on a local system</a></li>
+<li><a class="reference internal" href="#running-on-a-slurm-cluster">Running on a SLURM cluster</a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#running-individual-scripts">Running individual scripts</a></li>
+<li><a class="reference internal" href="#adding-custom-genome-annotation-and-homologous-recombination-references">Adding custom genome, annotation and homologous recombination references</a></li>
 <li><a class="reference internal" href="#output-files-of-interest">Output files of interest</a></li>
 <li><a class="reference internal" href="#legacy-mode-changes">legacy_mode changes</a><ul>
 <li><a class="reference internal" href="#fastqscreen">fastqscreen</a></li>
@@ -432,6 +643,7 @@ blast bit scores</p></li>
 <li><a class="reference internal" href="#fastqscreen-1">fastqscreen</a></li>
 </ul>
 </li>
+<li><a class="reference internal" href="#default-advanced-parameters">Default advanced parameters</a></li>
 <li><a class="reference internal" href="#change-log">Change log</a></li>
 </ul>
 </li>
@@ -470,7 +682,7 @@ blast bit scores</p></li>
   </div>
   <footer id="pagefooter">&copy; 2019, Ryan Dale.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a>
-      3.1.2.
+      3.2.1.
 
   </footer>
 
