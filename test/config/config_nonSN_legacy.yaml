@@ -10,7 +10,7 @@
 # Experiment name:
 name: test_fullfastq
 
-# Indicate here the path(s) to the fastq(s), relative to the config.yaml file.
+# Indicate here the path(s) to the fastq(s), relative to the HTtools directory.
 # If multiple files, indicate each file in its own line with an opening dash.
 
 fastq:
@@ -21,8 +21,8 @@ fastq:
 # Copy/paste the sample block for each of the samples in the library.
 # Each block indicates:
 #   - the sample name
-#   - the barcode start position
-#   - the barcode length
+#   - the barcode start position. Indicate 'none' for demultiplexed data
+#   - the barcode length. Indicate 'none' for demultiplexed data
 #   - the expected sequence from the barcode included to the end of LTR
 #   (if the library has Serial Numbers, the SN can be indicated with Xs in the sequence.
 #   Do not use A, T, G, C or N in the SN)
