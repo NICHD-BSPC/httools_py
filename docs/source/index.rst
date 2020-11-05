@@ -273,6 +273,13 @@ With the environment activated, navigate to the HTtools directory and run the wo
 
 ::
 
+   snakemake --config fn=config.yaml --cores=1
+
+Alternatively, to only trigger the re-run of rules affected by parameters that were modified in ``config.yaml``, run
+the following:
+
+::
+
    snakemake --config fn=config.yaml -R `snakemake --config fn=config.yaml --list-params-changes` --cores=1
 
 Notes:
@@ -497,7 +504,7 @@ Indicate ``none`` to disable a filter.
 
 +----------------+-------------------------------------------+------------------------+--------------+-----------------------------------------------------------------------------------------------------+
 | Filter key     | Match position                            | Allowed mismatches     | Filtered out | Purpose (exemple of Tf1)                                                                            |
-+============+===============================================+========================+==============+=====================================================================================================+
++================+===========================================+========================+==============+=====================================================================================================+
 | ``plasmid``    | immediately after end of retrotransposon  | yes, set with          | yes          | screens out reads from amplification of donor plasmid                                               |
 |                |                                           | ``allowed_mismatches`` |              |                                                                                                     |
 +----------------+-------------------------------------------+------------------------+--------------+-----------------------------------------------------------------------------------------------------+
@@ -516,7 +523,7 @@ Indicate ``none`` to disable a filter.
 |                |                                           | ``allowed_mismatches`` |              | purpose                                                                                             |
 +----------------+-------------------------------------------+------------------------+--------------+-----------------------------------------------------------------------------------------------------+
 
-* trimmed sequence read indicate trimmed of end of transposon reference sequence (in ``sequence`` of sample block)
+``*`` trimmed sequence read indicate trimmed of end of transposon reference sequence (in ``sequence`` of sample block)
 
 Exemple block:
 
