@@ -34,7 +34,7 @@ and homologous recombination references <adding-custom-genome-annotation-and-hom
 
 
 
-Four versions of *S. pombe* genome are currently included: 
+Four versions of *S. pombe* genome are currently included:
 
 - 2008 release
 
@@ -51,7 +51,7 @@ Parameters that are typical of the Tf1 retrotransposon are used in the
 ``test/config/config_*.yaml`` configuration files.
 
 For long-term reproducibility, it is recommended to set up a copy of the HTtools
-directory per project and to use an environment manager such as conda 
+directory per project and to use an environment manager such as conda
 (`bioconda <https://bioconda.github.io/>`__)
 to install the dependencies required. We recommend creating such an environment
 in each project directory. This allows the versions of all installed packages to
@@ -93,17 +93,17 @@ HTtools directory. It needs to be activated any time you’ll be working
 with this workflow. It is recommended to use the ``-p`` option to create
 the environment in the current directory. This makes it easier to track
 the environment used for each project. HTtools has been implemented and tested
-in Linux and MacOS environments. Other plateforms are not currently supported.
+in Linux and MacOS environments. Other platforms are not currently supported.
 
 Navigate to your HTtools directory.
 
-In a Linux system, create the environment:
+In a Linux system, create the environment using the ``requirements-linux.yaml`` file:
 
 ::
 
    conda env create -p env/ --file requirements-linux.yaml
 
-In a MacOS system, create the environment:
+In a MacOS system, create the environment using the ``requirements-macos.yaml`` file:
 
 ::
 
@@ -167,11 +167,11 @@ All sample information and workflow configurations are specified in the
 
 The following fields need to be adjusted for each individual run:
 
--  ``name`` experiment name. Should be unique in the project directory to avoid 
+-  ``name`` experiment name. Should be unique in the project directory to avoid
    overwritting of results. All results will be stored in a directory labelled ``data/{name}``
 
 -  ``fastq`` list of path(s) to the fastq file(s). Path(s) are relative to the HTtools directory.
-   Can be a .gz file
+   Can be a ``.gz`` file.
 
 -  ``sample`` block: The sample block must be copied for each sample
    (typically for each barcode). It must start with a unique name and contains the fields:
@@ -181,7 +181,7 @@ The following fields need to be adjusted for each individual run:
    -  ``barcode_length`` lenght of the barcode. Indicate ``none`` in absence of barcode.
    -  ``sequence`` expected sequence, from the barcode (included, if applicable) to the
       end of the LTR. Note: if a Serial Number is included, it must be
-      indicated with ``x``\ s.
+      indicated with ``x`` characters.
    -  ``integrase`` whether the integrase was native (``wt``) or
       frameshift (``fs``). This matters for shifting / not shifting the coordinates by the
       length of the Target Site Duplication (TSD).
@@ -217,8 +217,8 @@ Exemple block:
       pHL2882
    -  ``4``: 2012 release plus the sequence of the expression plasmid
       pHL2882
-   
-   Additional genome references can be added. See section 
+
+   Additional genome references can be added. See section
    :ref:`Adding custom genome, annotation and homologous recombination references <adding_custom_genome_annotation_and_homologous_recombination_references>`.
 
 
@@ -239,7 +239,7 @@ Exemple block:
 Advanced parameters include legacy_mode (see section :ref:`legacy_mode changes <legacy-mode-changes>`
 for details), reference sequences used for screening, blast parameters, and are also specified in
 the ``config.yaml`` file. Those parameters do not typically need to be modified between experiements
-as long as the experimental design remains identical. See the section :ref:`Default advanced 
+as long as the experimental design remains identical. See the section :ref:`Default advanced
 parameters <default-advanced-parameters>`, as well as the example files located in ``test/config/`` and
 the templates ``config-Tf1.yaml`` and ``config-Hermes.yaml`` for more details.
 
@@ -267,7 +267,9 @@ documentation for details on these execution methods).
 Running on a local system
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
-HTtools should be run on a system with at least (X CPU, Y RAM) due to the computational complexity.
+HTtools can be run on a laptop, but due to the computational complexity,
+library size, and number of insertions in an experiment it may take many hours
+on a laptop.
 
 With the environment activated, navigate to the HTtools directory and run the workflow:
 
@@ -305,8 +307,9 @@ the number of reads passing / blocked by each of the sequence filters for debugg
 Running on a SLURM cluster
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Optionally HTtools can be run on a cluster. A wrapper file is included for running on a SLURM cluster. Other
-types of clusters are not currently supported.
+Optionally HTtools can be run on a cluster. A wrapper file is included for
+running on a SLURM cluster. Other types of clusters should work (see Snakemake
+docs) but have not been tested.
 
 ::
 
@@ -354,7 +357,7 @@ The pipeline contains by default a set of S. pombe releases. Adding new referenc
 by following the steps below.
 
 Create a custom genome database from a reference fasta file using the tool ``makeblastdb``
-from the NCBI BLAST+ tool suite ([Camacho_et_al.,2009]_). ``makeblastdb`` is included in the environment.
+from the NCBI BLAST+ tool suite ([Camacho_et_al.,2009]_). ``makeblastdb`` is included in the conda environment.
 
 ::
 
@@ -367,8 +370,14 @@ set to any value.
 Copy the created *.nhr, *.nin, *.nsq files, fasta and annotation files
 to the directory ``HTtools/database/{new_database_name}``.
 
-Update the paths to ``genomedb`` and ``genomecds`` in the Advanced parameters section of the
-YAML configuration file accordingly.
+Update the advanced parameters in the config. The relevant keys are:
+
+- ``genomedb``
+- ``genomevs``
+- ``genomecds``
+- ``chro_listvs``
+- ``full_chro_list``
+- ``short_chro_list``
 
 A custom version of a retrotransposon preexisting insertions can be used to detect possible homologous
 recombination. Prepare BED6-formated files corresponding to the 3' terminal repeat outmost coordinate (U5),
@@ -425,6 +434,8 @@ HTtools_py was based.
 .. [Esnault_et_al_2019] Esnault C., Lee M., Ham C, Levin L. Transposable element insertions
    in fission yeast drive adaptation to environmental stress. https://doi.org/10.1101/gr.239699.118
 
+This section describes the relationship between the legacy tools and
+``--legacy_mode``.
 
 fastqscreen
 ~~~~~~~~~~~
@@ -533,7 +544,7 @@ Exemple block:
     # Advanced parameters
     # -----------------------------------------------------------
     # Those parameters do not typically need to be modified.
-    # Filters against linker, ltrcircle, plasmid, primary_incomplete, 
+    # Filters against linker, ltrcircle, plasmid, primary_incomplete,
     # second_incomplete and pbs are optional. Indicate 'none' to skip
     # those filters.
     legacy_mode: False                          # whether to enable legacy_mode
@@ -599,8 +610,8 @@ Exemple block:
       3: database/2007_with_pHL2882/cds.txt
       4: database/2012_ASM294v2_pHL2882/cds.txt
     # List of chromosomes of interest
-    # The integration log file will give for infomration purpose the count within each chromosome 
-    # in the reference genome, but only the chromosomes from the list below will be included 
+    # The integration log file will give for infomration purpose the count within each chromosome
+    # in the reference genome, but only the chromosomes from the list below will be included
     # in the output files integration, intergenic, ORF, location, ORFmap, logoDNA
     chro_listvs:
       1: short_chro_list
@@ -626,7 +637,7 @@ Change log
 
 **v1.1**
 
-- Generalize steps to run HTtools on different plateforms
+- Generalize steps to run HTtools on different platforms
 
 2020-07-14
 

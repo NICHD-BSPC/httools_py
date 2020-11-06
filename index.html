@@ -134,13 +134,13 @@ HTtools directory. It needs to be activated any time you’ll be working
 with this workflow. It is recommended to use the <code class="docutils literal notranslate"><span class="pre">-p</span></code> option to create
 the environment in the current directory. This makes it easier to track
 the environment used for each project. HTtools has been implemented and tested
-in Linux and MacOS environments. Other plateforms are not currently supported.</p>
+in Linux and MacOS environments. Other platforms are not currently supported.</p>
 <p>Navigate to your HTtools directory.</p>
-<p>In a Linux system, create the environment:</p>
+<p>In a Linux system, create the environment using the <code class="docutils literal notranslate"><span class="pre">requirements-linux.yaml</span></code> file:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="n">env</span> <span class="n">create</span> <span class="o">-</span><span class="n">p</span> <span class="n">env</span><span class="o">/</span> <span class="o">--</span><span class="n">file</span> <span class="n">requirements</span><span class="o">-</span><span class="n">linux</span><span class="o">.</span><span class="n">yaml</span>
 </pre></div>
 </div>
-<p>In a MacOS system, create the environment:</p>
+<p>In a MacOS system, create the environment using the <code class="docutils literal notranslate"><span class="pre">requirements-macos.yaml</span></code> file:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="n">env</span> <span class="n">create</span> <span class="o">-</span><span class="n">p</span> <span class="n">env</span><span class="o">/</span> <span class="o">--</span><span class="n">file</span> <span class="n">requirements</span><span class="o">-</span><span class="n">macos</span><span class="o">.</span><span class="n">yaml</span>
 </pre></div>
 </div>
@@ -195,7 +195,7 @@ as examples, containing default parameters typical of Tf1 and Hermes respectivel
 <li><p><code class="docutils literal notranslate"><span class="pre">name</span></code> experiment name. Should be unique in the project directory to avoid
 overwritting of results. All results will be stored in a directory labelled <code class="docutils literal notranslate"><span class="pre">data/{name}</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">fastq</span></code> list of path(s) to the fastq file(s). Path(s) are relative to the HTtools directory.
-Can be a .gz file</p></li>
+Can be a <code class="docutils literal notranslate"><span class="pre">.gz</span></code> file.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">sample</span></code> block: The sample block must be copied for each sample
 (typically for each barcode). It must start with a unique name and contains the fields:</p>
 <ul>
@@ -204,7 +204,7 @@ start. Indicate <code class="docutils literal notranslate"><span class="pre">non
 <li><p><code class="docutils literal notranslate"><span class="pre">barcode_length</span></code> lenght of the barcode. Indicate <code class="docutils literal notranslate"><span class="pre">none</span></code> in absence of barcode.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">sequence</span></code> expected sequence, from the barcode (included, if applicable) to the
 end of the LTR. Note: if a Serial Number is included, it must be
-indicated with <code class="docutils literal notranslate"><span class="pre">x</span></code>s.</p></li>
+indicated with <code class="docutils literal notranslate"><span class="pre">x</span></code> characters.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">integrase</span></code> whether the integrase was native (<code class="docutils literal notranslate"><span class="pre">wt</span></code>) or
 frameshift (<code class="docutils literal notranslate"><span class="pre">fs</span></code>). This matters for shifting / not shifting the coordinates by the
 length of the Target Site Duplication (TSD).</p></li>
@@ -280,7 +280,9 @@ submitted to a cluster, or run on cloud platforms (see the <a class="reference e
 documentation for details on these execution methods).</p>
 <div class="section" id="running-on-a-local-system">
 <h4>Running on a local system<a class="headerlink" href="#running-on-a-local-system" title="Permalink to this headline">¶</a></h4>
-<p>HTtools should be run on a system with at least (X CPU, Y RAM) due to the computational complexity.</p>
+<p>HTtools can be run on a laptop, but due to the computational complexity,
+library size, and number of insertions in an experiment it may take many hours
+on a laptop.</p>
 <p>With the environment activated, navigate to the HTtools directory and run the workflow:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">snakemake</span> <span class="o">--</span><span class="n">config</span> <span class="n">fn</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">yaml</span> <span class="o">--</span><span class="n">cores</span><span class="o">=</span><span class="mi">1</span>
 </pre></div>
@@ -314,8 +316,9 @@ the number of reads passing / blocked by each of the sequence filters for debugg
 </div>
 <div class="section" id="running-on-a-slurm-cluster">
 <h4>Running on a SLURM cluster<a class="headerlink" href="#running-on-a-slurm-cluster" title="Permalink to this headline">¶</a></h4>
-<p>Optionally HTtools can be run on a cluster. A wrapper file is included for running on a SLURM cluster. Other
-types of clusters are not currently supported.</p>
+<p>Optionally HTtools can be run on a cluster. A wrapper file is included for
+running on a SLURM cluster. Other types of clusters should work (see Snakemake
+docs) but have not been tested.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sbatch</span> <span class="o">--</span><span class="n">cpus</span><span class="o">-</span><span class="n">per</span><span class="o">-</span><span class="n">task</span><span class="o">=</span><span class="mi">4</span> <span class="n">scripts</span><span class="o">/</span><span class="n">WRAPPER_SLURM</span> <span class="n">config</span><span class="o">.</span><span class="n">yaml</span>
 </pre></div>
 </div>
@@ -352,7 +355,7 @@ must be relative to the results.Rmd file)</p>
 <p>The pipeline contains by default a set of S. pombe releases. Adding new references can be done
 by following the steps below.</p>
 <p>Create a custom genome database from a reference fasta file using the tool <code class="docutils literal notranslate"><span class="pre">makeblastdb</span></code>
-from the NCBI BLAST+ tool suite ([Camacho_et_al.,2009]_). <code class="docutils literal notranslate"><span class="pre">makeblastdb</span></code> is included in the environment.</p>
+from the NCBI BLAST+ tool suite ([Camacho_et_al.,2009]_). <code class="docutils literal notranslate"><span class="pre">makeblastdb</span></code> is included in the conda environment.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">makeblastdb</span> <span class="o">-</span><span class="ow">in</span> <span class="p">{</span><span class="n">genome</span><span class="o">.</span><span class="n">fasta</span><span class="p">}</span> <span class="o">-</span><span class="n">out</span> <span class="p">{</span><span class="n">genome</span><span class="o">.</span><span class="n">fas</span><span class="p">}</span> <span class="o">-</span><span class="n">dbtype</span> <span class="n">nucl</span> <span class="o">-</span><span class="n">logfile</span> <span class="n">logfile</span><span class="o">.</span><span class="n">txt</span>
 </pre></div>
 </div>
@@ -361,8 +364,15 @@ chrom, chromStart, chromEnd, name, score, strand. The score is not used by the p
 set to any value.</p>
 <p>Copy the created <a href="#id2"><span class="problematic" id="id3">*</span></a>.nhr, <a href="#id4"><span class="problematic" id="id5">*</span></a>.nin, <a href="#id6"><span class="problematic" id="id7">*</span></a>.nsq files, fasta and annotation files
 to the directory <code class="docutils literal notranslate"><span class="pre">HTtools/database/{new_database_name}</span></code>.</p>
-<p>Update the paths to <code class="docutils literal notranslate"><span class="pre">genomedb</span></code> and <code class="docutils literal notranslate"><span class="pre">genomecds</span></code> in the Advanced parameters section of the
-YAML configuration file accordingly.</p>
+<p>Update the advanced parameters in the config. The relevant keys are:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">genomedb</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">genomevs</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">genomecds</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">chro_listvs</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">full_chro_list</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">short_chro_list</span></code></p></li>
+</ul>
 <p>A custom version of a retrotransposon preexisting insertions can be used to detect possible homologous
 recombination. Prepare BED6-formated files corresponding to the 3’ terminal repeat outmost coordinate (U5),
 to the 5’ terminal repeat outmost coordinates (U3) and to single repeats (solo-LTR) that originated from
@@ -409,6 +419,8 @@ HTtools_py was based.</p>
 in fission yeast drive adaptation to environmental stress. <a class="reference external" href="https://doi.org/10.1101/gr.239699.118">https://doi.org/10.1101/gr.239699.118</a></p>
 </dd>
 </dl>
+<p>This section describes the relationship between the legacy tools and
+<code class="docutils literal notranslate"><span class="pre">--legacy_mode</span></code>.</p>
 <div class="section" id="fastqscreen">
 <h4>fastqscreen<a class="headerlink" href="#fastqscreen" title="Permalink to this headline">¶</a></h4>
 <p>The perl scripts <code class="docutils literal notranslate"><span class="pre">screen_illumina_Tf1_sequence-1.0.pl</span></code> and
@@ -631,7 +643,7 @@ purpose</p></td>
 <p>2020-10-29</p>
 <p><strong>v1.1</strong></p>
 <ul class="simple">
-<li><p>Generalize steps to run HTtools on different plateforms</p></li>
+<li><p>Generalize steps to run HTtools on different platforms</p></li>
 </ul>
 <p>2020-07-14</p>
 <p><strong>v1.0</strong></p>
