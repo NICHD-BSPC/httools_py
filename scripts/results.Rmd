@@ -7,7 +7,7 @@ output:
         toc_float: true
         toc_depth: 3
 params:
-        configfn: '../test/config/config_SN.yaml'
+        fn: '../test/config/config_SN.yaml'
         location: NULL
 ---
 
@@ -52,10 +52,8 @@ subchunkify <- function(g) {
 ```
 
 ```{r data_setup}
-#configfn <- 'test/config_full_large_SN.yaml'
-config <- read_yaml(params$configfn)
-respath <- dirname(params$configfn)
-mydir <- paste0(respath, '/data/', config[['name']])
+config <- read_yaml(params$fn)
+mydir <- paste0('../data/', config[['name']])
 dir.create(paste0(mydir, '/ORFmap'), showWarnings=FALSE)
 dir.create(paste0(mydir, '/heatmap'), showWarnings=FALSE)
 logdir <- paste0(mydir, '/logs/')
@@ -221,9 +219,9 @@ bply <- function(bp, xlab, ylab= 'Number of sequence reads') {
 
 catlink <- function(file, sample, legend) {
     file <- str_replace(file,
-                        paste0(respath, '/data/', config['name'], '/'),
+                        paste0('data/', config['name'], '/'),
                         '')
-    cat(paste0('\n\n', respath, '/data/', config['name'], '/\n\n'))
+    cat(paste0('\n\ndata/', config['name'], '/\n\n'))
     cat(paste0(
         '\n- [', file, '](', file, ') : ', legend, ' file for ', sample ,' sample(s)\n'))
 }

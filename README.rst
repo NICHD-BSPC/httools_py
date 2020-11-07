@@ -15,3 +15,7 @@ Documentation
 -------------
 
 Documentation can be found at http://NICHD-BSPC.github.io/httools.
+
+Current version
+---------------
+HTtools v1.1

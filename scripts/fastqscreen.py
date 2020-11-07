@@ -26,9 +26,9 @@ config = yaml.load(open(args.config))
 samples = [args.sample] if args.sample else config['sample'].keys()
 legacy_mode = config['legacy_mode']
 
-logdir = os.path.dirname(args.config) + '/data/' + config['name'] + '/logs'
+logdir = 'data/' + config['name'] + '/logs'
 Path(logdir).mkdir(parents=True, exist_ok=True)
-mydir = os.path.dirname(args.config)  +'/data/' + config['name'] + '/fastqscreen'
+mydir = 'data/' + config['name'] + '/fastqscreen'
 Path(mydir).mkdir(parents=True, exist_ok=True)
 
 
@@ -39,7 +39,10 @@ class SampleConfig:
         self.sample = sample
         self.seq = config['sample'][sample]['sequence']
         self.barcode_start = config['sample'][sample]['barcode_start']
-        self.barcode = self.seq[config['sample'][sample]['barcode_start']-1:config['sample'][sample]['barcode_length']]
+        if isinstance(config['sample'][sample]['barcode_start'], int) and isinstance(config['sample'][sample]['barcode_length'], int):
+            self.barcode = self.seq[config['sample'][sample]['barcode_start']-1:config['sample'][sample]['barcode_length']]
+        else:
+            self.barcode = 'none'
         self.integrase = config['sample'][sample]['integrase']
         self.lib_design = config['sample'][sample]['lib_design']
         self.length_to_match = config['length_to_match']
@@ -174,6 +177,8 @@ class ScreenFastq:
             return 0
 
     def has_barcode(self, seq, samplecfg):
+        if self.skipped(samplecfg.barcode_start):
+            return 1
         return self.exactmatch(seq, samplecfg.barcode, samplecfg.barcode_start)
 
     def has_end_ltr(self, seq, samplecfg):
@@ -181,6 +186,7 @@ class ScreenFastq:
         # should have been > because as it is it only allows for 1 mismatch
         maxmis = samplecfg.sn_length + samplecfg.allowed_mismatches -1 if legacy_mode \
             else samplecfg.sn_length + samplecfg.allowed_mismatches
+        maxmis = 0 if maxmis < 0 else maxmis
         score = self.SN_fuzzymatch(seq,
                           samplecfg.end_of_ltr,
                           len(samplecfg.seq)-len(samplecfg.end_of_ltr) + 1,
@@ -349,12 +355,11 @@ def screen_sample(config, samplecfg, counter, mydir, logdir):
 
     for fqfn in config['fastq']:
         print('\nProcessing ' + fqfn + '\n')
-        fqpath = os.path.join(os.path.dirname(args.config), fqfn)
+        fqpath = fqfn
         with openfile(fqpath, 'rt') as fqfile:
             for seqid, seq, qual in FastqGeneralIterator(fqfile):
                 nseq += 1
                 # screen seq
-                #print(nseq,'\t',seqid)
                 currentseq = ScreenFastq(seq, seqid, samplecfg)
                 # add to counter
                 for k in cols:

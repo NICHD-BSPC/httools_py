@@ -22,13 +22,13 @@ config = yaml.load(open(args.config))
 samples = [args.sample] if args.sample else config['sample'].keys()
 legacy_mode = config['legacy_mode']
 
-logdir = os.path.dirname(args.config) + '/data/' + config['name'] + '/logs'
+logdir = 'data/' + config['name'] + '/logs'
 Path(logdir).mkdir(parents=True, exist_ok=True)
-mydir = os.path.dirname(args.config) + '/data/' + config['name'] + '/location'
+mydir = 'data/' + config['name'] + '/location'
 Path(mydir).mkdir(parents=True, exist_ok=True)
-hmdir = os.path.dirname(args.config) + '/data/' + config['name'] + '/location/homologous_recombination'
+hmdir = 'data/' + config['name'] + '/location/homologous_recombination'
 Path(hmdir).mkdir(parents=True, exist_ok=True)
-exdir = os.path.dirname(args.config) + '/data/' + config['name'] + '/location/excluded'
+exdir = 'data/' + config['name'] + '/location/excluded'
 Path(exdir).mkdir(parents=True, exist_ok=True)
 
 class SampleConfig:
@@ -44,13 +44,21 @@ class SampleConfig:
         self.chromsizes = self.get_chromsizes(config)
         self.cdsfn = args.cds if args.cds else self.get_path(config['genomecds'][config['genome']])
         self.cds = self.get_bed(self.cdsfn)
-        self.ltr5 = self.get_bed(self.get_path(config['preexist_ltr'][self.lib_design]['ltr5']))
-        self.ltr3 = self.get_bed(self.get_path(config['preexist_ltr'][self.lib_design]['ltr3']))
-        self.sololtr = self.get_bed(self.get_path(config['preexist_ltr'][self.lib_design]['sololtr']))
+        self.ltr5 = 0 if self.skipped(config['preexist_ltr'][self.lib_design]['ltr5']) \
+            else self.get_bed(self.get_path(config['preexist_ltr'][self.lib_design]['ltr5']))
+        self.ltr3 = 0 if self.skipped(config['preexist_ltr'][self.lib_design]['ltr3']) \
+            else self.get_bed(self.get_path(config['preexist_ltr'][self.lib_design]['ltr3']))
+        self.sololtr = 0 if self.skipped(config['preexist_ltr'][self.lib_design]['sololtr']) \
+            else self.get_bed(self.get_path(config['preexist_ltr'][self.lib_design]['sololtr']))
         self.exclude = config['exclude']
 
+    def skipped(self, criteria):
+        """ Determine whether the filtering step should be skipped
+        """
+        return 1 if criteria == 'none' else 0
+
     def get_integfn(self, sample, config, args):
-        integfn = args.integration if args.integration else os.path.dirname(args.config) + '/data/' + config['name'] + \
+        integfn = args.integration if args.integration else 'data/' + config['name'] + \
             '/filblast/integration_' + sample + '.' + config['genomevs'][config['genome']] + '.txt'
         return integfn
 
@@ -212,31 +220,35 @@ def filter_homrecomb(samplecfg, config, fn):
     """ Parse integrations into homologous recombination, excluded and true integrations"""
     drop_cols = ['id'] if samplecfg.SN else ['id', 'indpt']
     # get positions to exclude
-    exclude = exclude_to_bed(samplecfg.exclude) if samplecfg.exclude != ['na'] else False
+    exclude = exclude_to_bed(samplecfg.exclude) if samplecfg.exclude != ['none'] else False
     # true integrations
-    beds = [samplecfg.ltr5, samplecfg.ltr3, samplecfg.sololtr, exclude] if exclude \
-        else [samplecfg.ltr5, samplecfg.ltr3, samplecfg.sololtr]
-    trueint = samplecfg.integdf.loc[
-        samplecfg.integbed.intersect(
-            beds, v=True, F=1, nonamecheck=True
-        ).to_dataframe()['name'], :]
+    beds = [x for x in [samplecfg.ltr5, samplecfg.ltr3, samplecfg.sololtr, exclude] if x ]
+    if len(beds) > 0:
+        trueint = samplecfg.integdf.loc[
+            samplecfg.integbed.intersect(
+                beds, v=True, F=1, nonamecheck=True
+            ).to_dataframe()['name'], :]
+    else:
+        trueint = samplecfg.integdf
     trueint.drop(columns=drop_cols).to_csv(mydir + '/true_integration_' + fn + '.txt', sep='\t')
     # in LTR 5'
-    idx = samplecfg.integbed.intersect(samplecfg.ltr5, wa=True, F=1, nonamecheck=True)
+    idx = samplecfg.integbed.intersect(samplecfg.ltr5, wa=True, F=1, nonamecheck=True) if samplecfg.ltr5 else 0
     if idx:
         ltr5 = samplecfg.integdf.loc[idx.to_dataframe()['name'], :]
         ltr5.drop(columns=drop_cols).to_csv(mydir + '/homologous_recombination/ltr5_integration_' + fn + '.txt', sep='\t')
     else:
         ltr5 = pd.DataFrame(columns=samplecfg.integdf.columns)
     # in LTR3'
-    idx = samplecfg.integbed.intersect(samplecfg.ltr3, wa=True, F=1, nonamecheck=True)
+    idx = samplecfg.integbed.intersect(samplecfg.ltr3, wa=True, F=1, nonamecheck=True) if samplecfg.ltr3 else 0
+
     if idx:
         ltr3 = samplecfg.integdf.loc[idx.to_dataframe()['name'], :]
         ltr3.drop(columns=drop_cols).to_csv(mydir + '/homologous_recombination/ltr3_integration_' + fn + '.txt', sep='\t')
     else:
         ltr3 = pd.DataFrame(columns=samplecfg.integdf.columns)
     # in solo-LTR
-    idx = samplecfg.integbed.intersect(samplecfg.sololtr, wa=True, F=1, nonamecheck=True)
+    idx = samplecfg.integbed.intersect(samplecfg.sololtr, wa=True, F=1, nonamecheck=True) if samplecfg.sololtr else 0
+
     if idx:
         sololtr = samplecfg.integdf.loc[idx.to_dataframe()['name'], :]
         sololtr.drop(columns=drop_cols).to_csv(mydir + '/homologous_recombination/sololtr_integration_' + fn + '.txt', sep='\t')
@@ -259,8 +271,11 @@ def filter_homrecomb(samplecfg, config, fn):
 def make_location(integ, samplecfg, tsdshiftCDS, cdsdf, legacy_mode):
     """ Run the integration row in Location class and
     return the location-formated row"""
+    print('integloc')
     integloc = Location(integ, samplecfg, tsdshiftCDS, cdsdf, legacy_mode)
+    print('upORF')
     upORF = integloc.inorf_start if integloc.closestorf['dist'][0] == 0 else integloc.uporf
+    print('dnORF')
     dnORF = integloc.inorf_end if integloc.closestorf['dist'][0] == 0 else integloc.dnorf
     row = {'ID': integloc.ID,
            'chr': integloc.chro,

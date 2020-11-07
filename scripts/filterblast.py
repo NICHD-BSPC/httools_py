@@ -22,9 +22,9 @@ config = yaml.load(open(args.config))
 samples = [args.sample] if args.sample else config['sample'].keys()
 legacy_mode = config['legacy_mode']
 
-logdir = os.path.dirname(args.config) + '/data/' + config['name'] + '/logs'
+logdir = 'data/' + config['name'] + '/logs'
 Path(logdir).mkdir(parents=True, exist_ok=True)
-mydir = os.path.dirname(args.config) + '/data/' + config['name'] + '/filblast'
+mydir = 'data/' + config['name'] + '/filblast'
 Path(mydir).mkdir(parents=True, exist_ok=True)
 
 
@@ -41,12 +41,12 @@ class SampleConfig:
         self.SNdict = self.get_SNdict(sample, config, args) if self.SN else 0
 
     def get_blastfn(self, sample, config, args):
-        blastfn = args.blast if args.blast else os.path.dirname(args.config) + '/data/' + config['name'] + '/blast/blast_' + \
+        blastfn = args.blast if args.blast else 'data/' + config['name'] + '/blast/blast_' + \
             sample + '.' + config['genomevs'][config['genome']] + '.txt'
         return blastfn
 
     def get_SNdict(self, sample, config, args):
-        SNfn = args.screenSN if args.screenSN else os.path.dirname(args.config) + '/data/' + config['name'] + '/fastqscreen/screen_' + sample + '_SN.txt'
+        SNfn = args.screenSN if args.screenSN else 'data/' + config['name'] + '/fastqscreen/screen_' + sample + '_SN.txt'
         SNdict = {rec.id : rec.seq for rec in SeqIO.parse(SNfn, "fasta")}
         return SNdict
 
