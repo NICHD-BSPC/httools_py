@@ -1,4 +1,4 @@
-ID	chr	position	strand	indpt	dupl	uporf	upstart	upend	upstrand	updist	dnorf	dnstart	dnend	dnstrand	dndist	location	intergenic_type	distance
+id	chr	position	strand	indpt	dupl	uporf	upstart	upend	upstrand	updist	dnorf	dnstart	dnend	dnstrand	dndist	location	intergenic_type	distance
 SSP_AB325691_10153_-	AB325691	10153	-	1	1	AB325691_start	1	1	na	-10151	AB325691_end	20001	20001	na	9847	IN_end		9847
 SSP_AB325691_11255_+	AB325691	11255	+	1	1	AB325691_start	1	1	na	-11253	AB325691_end	20001	20001	na	8745	IN_end		8745
 SSP_AB325691_11274_-	AB325691	11274	-	2	4	AB325691_start	1	1	na	-11272	AB325691_end	20001	20001	na	8726	IN_end		8726

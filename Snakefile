@@ -138,6 +138,7 @@ rule location:
         log='data/{name}/logs/location_{name}_{sample}.{version}.log.txt',
     run:
         shell('python {input.script} --config {fn} --sample {wildcards.sample}')
+        shell('rm inters.txt')
 
 rule cat_logs:
     """

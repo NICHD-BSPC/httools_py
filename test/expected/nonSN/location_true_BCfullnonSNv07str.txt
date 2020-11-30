@@ -1,4 +1,4 @@
-ID	chr	position	strand	dupl	uporf	upstart	upend	upstrand	updist	dnorf	dnstart	dnend	dnstrand	dndist	location	intergenic_type	distance
+id	chr	position	strand	dupl	uporf	upstart	upend	upstrand	updist	dnorf	dnstart	dnend	dnstrand	dndist	location	intergenic_type	distance
 SSP_chr1_54906_+	chr1	54906	+	1	sod2 SPAC977.10 	52117	53600	+	-1310	SPAC977.11 	55274	56209	+	368	UP	Tandem	368
 SSP_chr1_76591_-	chr1	76591	-	1	SPAC977.17 	67143	68939	+	-7656	SPAPJ695.01c 	77578	77931	-	987	DOWN	Convergent	987
 SSP_chr1_76605_+	chr1	76605	+	1	SPAC977.17 	67143	68939	+	-7670	SPAPJ695.01c 	77578	77931	-	973	DOWN	Convergent	973
