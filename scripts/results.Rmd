@@ -444,7 +444,7 @@ bply(bp, xlab='Feature', ylab='Percent')
 cat('\n\n#### Correlation heatmap {.tabset}\n\n')
 for (intype in unique(tlog[['type']])) {
     cat(paste0('\n\n##### ', intype, '\n\n'))
-    subchunkify(plot.heatmap(sample.list, 'ID', 'location', intype))
+    subchunkify(plot.heatmap(sample.list, 'id', 'location', intype))
 }
 
 cat('\n\n### Intergenic \n\n')
@@ -544,7 +544,7 @@ for (sample in names(sample.list)) {
     # filter out chromosomes not in config[['short_chro_list']]
     location <- location %>%
         filter(chr %in% config[['short_chro_list']])
-    rownames(location) <- location[['ID']]
+    rownames(location) <- location[['id']]
     #calculate totals
     totallog <- bind_rows(totallog, tibble(sample = c(sample, sample, sample),
                                type = c('SSP', 'indpt', 'dupl'),

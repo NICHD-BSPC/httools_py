@@ -8,7 +8,7 @@ import pandas as pd
 import numpy as np
 import argparse
 from Bio import SeqIO
-import pybedtools
+import pybedtools as pbt
 
 ap = argparse.ArgumentParser()
 ap.add_argument('--config', help='config.yaml file', default='../config/config.yaml')
@@ -69,7 +69,7 @@ class SampleConfig:
             df.rename(columns={'duplicate_reads':'dupl', 'independent_events':'indpt'})
         col_names = ['chr', 'position', 'position', 'id', 'dupl', 'strand']
         df['id'] = df.index
-        bed = pybedtools.BedTool.from_dataframe(df[col_names])
+        bed = pbt.BedTool.from_dataframe(df[col_names])
         return df, bed
 
     def get_chromsizes(self, config):
@@ -83,12 +83,12 @@ class SampleConfig:
 
     def get_bed(self, fn):
         # need to add mock CDS for start and end of chromosomes, for the first and last intergenic regions
-        bed = pybedtools.BedTool(fn)
+        bed = pbt.BedTool(fn)
         extbed = pd.DataFrame(columns=['chr', 'start', 'end', 'name', 'score', 'strand'])
         for chro in self.chromsizes.keys():
             extbed.loc[chro + '_start'] = [chro, 1, 1, chro+'_start', 0, 'na']
             extbed.loc[chro + '_end'] = [chro, self.chromsizes[chro]+1, self.chromsizes[chro]+1, chro+'_end', 0, 'na']
-        extbed = pybedtools.BedTool.from_dataframe(extbed)
+        extbed = pbt.BedTool.from_dataframe(extbed)
         return extbed.cat(bed, postmerge=False).sort()
 
 
@@ -115,86 +115,188 @@ class Location:
         convergent, tandem, or -- if in ORF)
     distance refers to the distance of integration to the nearest ORF
     """
-    def __init__(self, integ, samplecfg, tsdshiftCDS, cdsdf, legacy_mode):
-        self.ID = integ['id']
-        self.chro = integ['chr']
-        self.position = integ['position']
-        self.strand = integ['strand']
-        self.dupl = integ['dupl']
-        self.indpt = integ['indpt']
-        self.integbed = self.integ_to_bed(self.ID, self.chro, self.position, self.strand)
+    def __init__(self, integ, samplecfg, tsdshiftCDS):
+        #self.ID = integ['id']
+        #self.chro = integ['chr']
+        #self.position = integ['position']
+        #self.strand = integ['strand']
+        #self.dupl = integ['dupl']
+        #self.indpt = integ['indpt']
+        #self.integbed = self.integ_to_bed(self.ID, self.chro, self.position, self.strand)
         # location determined relative to the shifted CDS, then the coordinates are shifted back to original
-        self.uporf = self.map_interg(self.integbed, tsdshiftCDS, cdsdf, fu=True)
-        self.dnorf = self.map_interg(self.integbed, tsdshiftCDS, cdsdf, fd=True)
-        self.closestorf = self.map_interg(self.integbed, tsdshiftCDS, cdsdf)
-        # self.closestorf has original coordinates. Need to shift to determine location then shift back
-        self.inorf_start = self.map_inorf(
-            self.integbed, self.closestorf, cdsdf, samplecfg.tsd, fu=True) if self.closestorf['dist'][0] == 0 else 0
-        self.inorf_end = self.map_inorf(
-            self.integbed, self.closestorf, cdsdf, samplecfg.tsd, fd=True) if self.closestorf['dist'][0] == 0 else 0
+        self.uporf = self.map_interg(integ, tsdshiftCDS, fu=True)
+        self.dnorf = self.map_interg(integ, tsdshiftCDS, fd=True)
+        self.closestorf = self.map_interg(integ, tsdshiftCDS)
+        self.inorf_start = self.map_inorf(integ, tsdshiftCDS, fu=True)
+        self.inorf_end = self.map_inorf(integ, tsdshiftCDS, fd=True)
         self.loc = self.get_loc(self.uporf, self.dnorf, self.closestorf, self.inorf_start, self.inorf_end)
-        self.intergenic = '--' if self.closestorf['dist'][0] == 0 \
-                            else get_intergtype(self.uporf['orfstrand'][0], self.dnorf['orfstrand'][0])
-        self.distance = min(abs(self.inorf_start['dist'][0]), abs(self.inorf_end['dist'][0])) \
-                            if self.closestorf['dist'][0] == 0 \
-                            else min(abs(self.uporf['dist'][0]), abs(self.dnorf['dist'][0]))
+        self.intergenic = self.get_intergtype(self.closestorf, self.uporf, self.dnorf)
 
-    def integ_to_bed(self, ID, chro, position, strand):
-        return pybedtools.BedTool.from_dataframe(
-            pd.DataFrame([{'chrom':chro, 'chromStart':position, 'chromEnd':position,
-                           'name':ID, 'score':0, 'strand':strand}]))
+        self.distance = self.get_distance(self.inorf_start, self.inorf_end, self.closestorf, self.uporf, self.dnorf)
 
-    def map_interg(self, integbed, tsdshiftedCDS, cdsdf, fu=False, fd=False):
-        dfcols = ['chrom', 'start', 'end', 'name', 'score', 'strand',
-                     'orfchr', 'orfstart', 'orfend', 'orfname', 'orfscore', 'orfstrand',
-                     'dist']
+    def map_interg(self, integ, tsdshiftedCDS, fu=False, fd=False):
+        #dfcols = [0'chrom', 1'start', 2'end', 3'name', 4'score', 5'strand',
+        #             6'orfchr', 7'orfstart', 8'orfend', 9'orfname', 10'orfscore', 11'orfstrand',
+        #             12'dist']
+        #           chr1    12693   12693   SSP_chr1_12693_+    0   +
+        #           chr1    12158   12985   SPAC212.08c         na  +
+        #           0
         # if ties in closest, take only the first occurance
-        df = integbed.closest(tsdshiftedCDS, D = "ref",
+        bed = integ.closest(tsdshiftedCDS, D = "ref",
                               fu=fu, fd=fd,
                               k=1, nonamecheck=True,
-                              t='first').to_dataframe(header=None, names=dfcols)
-        # revert TSD shift for the end coordinate of ORF now that the distance has been calculated
-        df = self.tsd_reverse(df, cdsdf)
-        return df[['orfname', 'orfstart', 'orfend', 'orfstrand','dist', 'chrom']]
+                              t='first')
+        bed = bed.to_dataframe(header=None, names=['chrom', 'start', 'end', 'name', 'score', 'strand',
+                       'orf_chrom', 'orf_start', 'orf_end', 'orf_name', 'orf_score', 'orf_strand', 'distance'])
+        return bed.set_index('name')
 
-    def map_inorf(self, integbed, orf, cdsdf, tsd, fu=False, fd=False):
-        # create 2 intervals of 1bp per ORF for start and end, shift the end interval coordinate
+    def map_inorf(self, integ, orf, fu=False, fd=False):
+        # create 2 intervals of 1bp per ORF for start and end, for each orf
         # NOTE: added -1 and +1 to start and end because the distances were shifted by 1bp compared to
         # the original Perl HTtools
-        df = pd.DataFrame({'chrom':[orf['chrom'][0], orf['chrom'][0]],
-                           'start': [orf['orfstart'][0]-1, orf['orfend'][0]+1-tsd-1] if legacy_mode else \
-                                [orf['orfstart'][0]-1, orf['orfend'][0]+1-tsd+1],
-                           'end' : [orf['orfstart'][0]-1, orf['orfend'][0]+1-tsd-1] if legacy_mode else \
-                                [orf['orfstart'][0]-1, orf['orfend'][0]+1-tsd+1],
-                           'name': [orf['orfname'][0], orf['orfname'][0]],
-                           'score': [0, 0],
-                           'strand':[orf['orfstrand'][0], orf['orfstrand'][0]]})
-        orfbed = pybedtools.BedTool.from_dataframe(df)
-        return self.map_interg(integbed, orfbed, cdsdf, fu=fu, fd=fd)
+        with open('inters.txt', 'w') as fout:
+            for y in orf:
+                # next part of line is ORFs made up from start coordinates
+                start = str(y.start-1) if y.start > 1 else str(y.start)
+                line = [
+                    y.chrom,
+                    start, start,
+                    y.name,
+                    y.score,
+                    y.strand
+                ]
+                fout.write('\t'.join(line) + '\n')
+                # next part of line is ORFs made up from end coordinates
+                line = [
+                    y.chrom,
+                    str(y.end+1), str(y.end+1),
+                    y.name,
+                    y.score,
+                    y.strand
+                ]
+                fout.write('\t'.join(line) + '\n')
+        orfbed = pbt.BedTool('inters.txt').sort()
+        return self.map_interg(integ, orfbed, fu=fu, fd=fd)
 
     def get_loc(self, uporf, dnorf, closestorf, inorf_start, inorf_end):
-        if (closestorf['dist'][0] == 0 and abs(inorf_start['dist'][0]) <= abs(inorf_end['dist'][0])):
-            direction = 'IN_start' if closestorf['orfstrand'][0] == '+' else 'IN_end'
-        elif (closestorf['dist'][0] == 0 and abs(inorf_start['dist'][0]) > abs(inorf_end['dist'][0])):
-            direction = 'IN_end' if closestorf['orfstrand'][0] == '+' else 'IN_start'
-        elif (abs(uporf['dist'][0]) <= abs(dnorf['dist'][0])):
-            direction = 'UP' if uporf['orfstrand'][0] == '-' else 'DOWN'
-        elif (abs(uporf['dist'][0]) > abs(dnorf['dist'][0])):
-            direction = 'DOWN' if dnorf['orfstrand'][0] == '-' else 'UP'
-        # special case if start or end of chromosome, to match perl version
-        if (uporf['orfstrand'][0] == 'na'):
-            direction = 'DOWN' if dnorf['orfstrand'][0] == '-' else 'UP'
-        if (dnorf['orfstrand'][0] == 'na'):
-            direction = 'UP' if uporf['orfstrand'][0] == '-' else 'DOWN'
-        if (dnorf['orfstrand'][0] == 'na' and uporf['orfstrand'][0] == 'na'):
-            direction = 'IN_end'
-        return(direction)
+        locdf = pd.DataFrame(columns = ['direction'], index = uporf.index)
+        locdf['direction'] = np.where(
+            # in ORF, closer to start, + strand ORF
+            (closestorf['distance'] == 0) & (abs(inorf_start['distance']) <= abs(inorf_end['distance'])) \
+                & (closestorf['orf_strand'] == '+'),
+            'IN_start', locdf['direction'])
+        locdf['direction'] = np.where(
+            # in ORF, closer to start, - strand ORF
+            (closestorf['distance'] == 0) & (abs(inorf_start['distance']) <= abs(inorf_end['distance'])) \
+                & (closestorf['orf_strand'] == '-'),
+            'IN_end', locdf['direction'])
+        locdf['direction'] = np.where(
+            # in ORF, closer to end, + strand ORF
+            (closestorf['distance'] == 0) & (abs(inorf_start['distance']) > abs(inorf_end['distance'])) \
+                & (closestorf['orf_strand'] == '+'),
+            'IN_end', locdf['direction'])
+        locdf['direction'] = np.where(
+            # in ORF, closer to end, - strand ORF
+            (closestorf['distance'] == 0) & (abs(inorf_start['distance']) > abs(inorf_end['distance'])) \
+                & (closestorf['orf_strand'] == '-'),
+            'IN_start', locdf['direction'])
+        locdf['direction'] = np.where(
+            # outside ORF, closer to uporf, + strand ORF
+            (closestorf['distance'] != 0) & (abs(uporf['distance']) <= abs(dnorf['distance'])) \
+                & (uporf['orf_strand'] == '+'),
+            'DOWN', locdf['direction'])
+        locdf['direction'] = np.where(
+            # outside ORF, closer to uporf, - strand ORF
+            (closestorf['distance'] != 0) & (abs(uporf['distance']) <= abs(dnorf['distance'])) \
+                & (uporf['orf_strand'] == '-'),
+            'UP', locdf['direction'])
+        locdf['direction'] = np.where(
+            # outside ORF, closer to dnorf, + strand ORF
+            (closestorf['distance'] != 0) & (abs(uporf['distance']) > abs(dnorf['distance'])) \
+                & (dnorf['orf_strand'] == '+'),
+            'UP', locdf['direction'])
+        locdf['direction'] = np.where(
+            # outside ORF, closer to dnorf, - strand ORF
+            (closestorf['distance'] != 0) & (abs(uporf['distance']) > abs(dnorf['distance'])) \
+                & (dnorf['orf_strand'] == '-'),
+            'DOWN', locdf['direction'])
+#        if (int(closestorf[12]) == 0 and abs(int(inorf_start[12])) <= abs(int(inorf_end[12]))):
+ #           direction = 'IN_start' if closestorf[11] == '+' else 'IN_end'
+ #       elif (int(closestorf[12]) == 0 and abs(int(inorf_start[12])) > abs(int(inorf_end[12]))):
+ #           direction = 'IN_end' if closestorf[11] == '+' else 'IN_start'
+#        elif (abs(int(uporf[12])) <= abs(int(dnorf[12]))):
+#            direction = 'UP' if uporf[11] == '-' else 'DOWN'
+ #       elif (abs(int(uporf[12])) > abs(int(dnorf[12]))):
+ #           direction = 'DOWN' if dnorf[11] == '-' else 'UP'
 
-    def tsd_reverse(self, shifteddf, cdsdf):
-        # reverse the shift of end coordinate of CDS (relative to genome) by TSD + 1
-        shifteddf['orfend'] = shifteddf.apply(lambda x: cdsdf[cdsdf['name'] == x['orfname']]['end'], axis=1)
-        shifteddf['orfstart'] = shifteddf.apply(lambda x: cdsdf[cdsdf['name'] == x['orfname']]['start'], axis=1)
-        return(shifteddf)
+        # special case if start or end of chromosome, to match perl version
+        locdf['direction'] = np.where(
+            # uporf strand is na, dnorf strand is -
+            (uporf['orf_strand'] == 'na') & (dnorf['orf_strand'] == '-'),
+            'DOWN', locdf['direction'])
+        locdf['direction'] = np.where(
+            # uporf strand is na, dnorf strand is +
+            (uporf['orf_strand'] == 'na') & (dnorf['orf_strand'] == '+'),
+            'UP', locdf['direction'])
+        locdf['direction'] = np.where(
+            # dnorf strand is na, uporf strand is -
+            (dnorf['orf_strand'] == 'na') & (uporf['orf_strand'] == '-'),
+            'UP', locdf['direction'])
+        locdf['direction'] = np.where(
+            # dnorf strand is na, uporf strand is +
+            (dnorf['orf_strand'] == 'na') & (uporf['orf_strand'] == '+'),
+            'DOWN', locdf['direction'])
+        locdf['direction'] = np.where(
+            # dnorf and uporf strands are na
+            (dnorf['orf_strand'] == 'na') & (uporf['orf_strand'] == 'na'),
+            'IN_end', locdf['direction'])
+#        if (uporf[11] == 'na'):
+#            direction = 'DOWN' if dnorf[11] == '-' else 'UP'
+#        if (dnorf[11] == 'na'):
+#            direction = 'UP' if uporf[11] == '-' else 'DOWN'
+#        if (dnorf[11] == 'na' and uporf[11] == 'na'):
+#            direction = 'IN_end'
+        return(locdf)
+
+    def get_intergtype(self, closestorf, uporf, dnorf):
+        inter = pd.DataFrame(columns = ['type'], index = uporf.index)
+        inter['type'] = np.where((uporf['orf_strand'] == '+') & (dnorf['orf_strand'] == '+'),
+                                 'Tandem', inter['type'])
+        inter['type'] = np.where((uporf['orf_strand'] == '-') & (dnorf['orf_strand'] == '-'),
+                                 'Tandem', inter['type'])
+        inter['type'] = np.where((uporf['orf_strand'] == '+') & (dnorf['orf_strand'] == '-'),
+                                 'Convergent', inter['type'])
+        inter['type'] = np.where((uporf['orf_strand'] == '-') & (dnorf['orf_strand'] == '+'),
+                                 'Divergent', inter['type'])
+        inter['type'] = np.where((uporf['orf_strand'] == 'na') | (dnorf['orf_strand'] == 'na'),
+                                 '', inter['type'])
+        inter['type'] = np.where((closestorf['distance'] == 0),
+                                 '--', inter['type'])
+        return inter
+
+    def get_distance(self, inorf_start, inorf_end, closestorf, uporf, dnorf):
+        dist = pd.DataFrame(columns = ['dist'], index = uporf.index)
+        dist['dist'] = np.where(
+            (closestorf['distance'] == 0) & (abs(inorf_start['distance']) <= (inorf_end['distance'])),
+            abs(inorf_start['distance']), dist['dist'])
+        dist['dist'] = np.where(
+            (closestorf['distance'] == 0) & (abs(inorf_start['distance']) > (inorf_end['distance'])),
+            abs(inorf_end['distance']), dist['dist'])
+        dist['dist'] = np.where(
+            (closestorf['distance'] != 0) & (abs(uporf['distance']) <= (dnorf['distance'])),
+            abs(uporf['distance']), dist['dist'])
+        dist['dist'] = np.where(
+            (closestorf['distance'] != 0) & (abs(uporf['distance']) > (dnorf['distance'])),
+            abs(dnorf['distance']), dist['dist'])
+        return dist
+
+
+
+def tsd_reverse(shifteddf, cdsdf):
+    # reverse the shift of end coordinate of CDS (relative to genome) by TSD + 1
+    shifteddf['orfend'] = shifteddf.apply(lambda x: cdsdf[cdsdf['name'] == x['orfname']]['end'], axis=1)
+    shifteddf['orfstart'] = shifteddf.apply(lambda x: cdsdf[cdsdf['name'] == x['orfname']]['start'], axis=1)
+    return(shifteddf)
 
 def tsd_shift(cdsdf, tsd):
     # shift the end coordinate of CDS (relative to genome) by TSD + 1 to account for TSD
@@ -204,8 +306,12 @@ def tsd_shift(cdsdf, tsd):
         df['end'] - tsd +1
     # shift only to start coordinate if the interval is < tsd
     df['end'] = np.where(df['end'] < df['start'], df['start'], df['end'])
-    return(pybedtools.BedTool.from_dataframe(df))
+    return(pbt.BedTool.from_dataframe(df))
 
+def integ_to_bed(integ):
+    integ.loc[:,'score'] = 0
+    cols = ['chr', 'position', 'position', 'id', 'score', 'strand']
+    return pbt.BedTool.from_dataframe(integ[cols])
 
 def exclude_to_bed(exclude):
     """ Takes list of positions to exclude and return BedTool object"""
@@ -213,7 +319,7 @@ def exclude_to_bed(exclude):
     df[['chr', 'start', 'strand']] = df.name.str.split('_', expand=True)
     df['score'] = 1
     df = df[['chr', 'start', 'start', 'name', 'score', 'strand']]
-    return(pybedtools.BedTool.from_dataframe(df))
+    return(pbt.BedTool.from_dataframe(df))
 
 
 def filter_homrecomb(samplecfg, config, fn):
@@ -268,35 +374,60 @@ def filter_homrecomb(samplecfg, config, fn):
 
 
 
-def make_location(integ, samplecfg, tsdshiftCDS, cdsdf, legacy_mode):
+def make_location(integ, integdf, samplecfg, tsdshiftCDS, cdsdf):
     """ Run the integration row in Location class and
     return the location-formated row"""
-    print('integloc')
-    integloc = Location(integ, samplecfg, tsdshiftCDS, cdsdf, legacy_mode)
-    print('upORF')
-    upORF = integloc.inorf_start if integloc.closestorf['dist'][0] == 0 else integloc.uporf
-    print('dnORF')
-    dnORF = integloc.inorf_end if integloc.closestorf['dist'][0] == 0 else integloc.dnorf
-    row = {'ID': integloc.ID,
-           'chr': integloc.chro,
-           'position': integloc.position,
-           'strand': integloc.strand,
-           'indpt' : integloc.indpt if samplecfg.SN else np.nan,
-           'dupl' : integloc.dupl,
-           'uporf' : upORF['orfname'][0],
-           'upstart' : upORF['orfstart'][0],
-           'upend' : upORF['orfend'][0],
-           'upstrand' : upORF['orfstrand'][0],
-           'updist' : upORF['dist'][0],
-           'dnorf' : dnORF['orfname'][0],
-           'dnstart' : dnORF['orfstart'][0],
-           'dnend' : dnORF['orfend'][0],
-           'dnstrand' : dnORF['orfstrand'][0],
-           'dndist' : dnORF['dist'][0],
-           'location' : integloc.loc,
-           'intergenic_type' : integloc.intergenic,
-           'distance' : integloc.distance}
-    return row
+    integloc = Location(integ, samplecfg, tsdshiftCDS)
+    integdf = integdf.loc[:,['id', 'chr', 'position', 'strand', 'indpt', 'dupl']]
+    integdf['indpt'] = integdf['indpt'] if samplecfg.SN else np.nan
+    integdf['uporf'] = np.where(integloc.closestorf['distance'] == 0,
+                                integloc.inorf_start['orf_name'],
+                                integloc.uporf['orf_name'])
+    # ORF coordinates are still shifted, need to shift back
+    integdf['upstart'] = [int(cdsdf[cdsdf['name'] == x].loc[:,'start']) for x in integdf['uporf']]
+    integdf['upend'] = [int(cdsdf[cdsdf['name'] == x].loc[:,'end']) for x in integdf['uporf']]
+    integdf['upstrand'] = np.where(integloc.closestorf['distance'] == 0,
+                                integloc.inorf_start['orf_strand'],
+                                integloc.uporf['orf_strand'])
+    integdf['updist'] = np.where(integloc.closestorf['distance'] == 0,
+                                integloc.inorf_start['distance'],
+                                integloc.uporf['distance'])
+    integdf['dnorf'] = np.where(integloc.closestorf['distance'] == 0,
+                                integloc.inorf_end['orf_name'],
+                                integloc.dnorf['orf_name'])
+    integdf['dnstart'] = [int(cdsdf[cdsdf['name'] == x].loc[:,'start']) for x in integdf['dnorf']]
+    integdf['dnend'] = [int(cdsdf[cdsdf['name'] == x].loc[:,'end']) for x in integdf['dnorf']]
+    integdf['dnstrand'] = np.where(integloc.closestorf['distance'] == 0,
+                                integloc.inorf_end['orf_strand'],
+                                integloc.dnorf['orf_strand'])
+    integdf['dndist'] = np.where(integloc.closestorf['distance'] == 0,
+                                integloc.inorf_end['distance'],
+                                integloc.dnorf['distance'])
+    integdf['location'] = integloc.loc['direction']
+    integdf['intergenic_type'] = integloc.intergenic['type']
+    integdf['distance'] = integloc.distance['dist']
+
+#    row = {'ID': integloc.ID,
+#           'chr': integloc.chro,
+#           'position': integloc.position,
+#           'strand': integloc.strand,
+#           'indpt' : integloc.indpt if samplecfg.SN else np.nan,
+#           'dupl' : integloc.dupl,
+#           # ORF coordinates are still shifted, need to shift back
+#           'uporf' : upORF[9],
+#           'upstart' : int(cdsdf[cdsdf['name'] == upORF[9]]['start']),
+#           'upend' : int(cdsdf[cdsdf['name'] == upORF[9]]['end']),
+#           'upstrand' : upORF[11],
+#           'updist' : upORF[12],
+#           'dnorf' : dnORF[9],
+#           'dnstart' : int(cdsdf[cdsdf['name'] == dnORF[9]]['start']),
+#           'dnend' : int(cdsdf[cdsdf['name'] == dnORF[9]]['end']),
+#           'dnstrand' : dnORF[11],
+#           'dndist' : dnORF[12],
+#           'location' : integloc.loc,
+#           'intergenic_type' : integloc.intergenic,
+#           'distance' : integloc.distance}
+    return integdf
 
 
 def collapse(df):
@@ -391,6 +522,15 @@ def make_counter(location, ltr5, ltr3, sololtr, excludepos, samplecfg, counter):
     return counter
 
 
+def check_cds(cds):
+    # check gene names are unique and convert to dataframe
+    cdsdf = cds.to_dataframe()
+    if len(cdsdf['name']) > len(cdsdf['name'].unique()):
+        raise ValueError('Invalid CDS file. Gene names must be unique:\n' +
+                         '\n'.join(cdsdf[cdsdf['name'].duplicated()]['name']) + '\n')
+    else:
+        return cdsdf
+
 def main():
     for sample in samples:
         counter_cols = list()
@@ -403,16 +543,15 @@ def main():
         fn = samplecfg.sample + '.' +  config['genomevs'][config['genome']]
         # distances and location calculated after taking into account the TSD 
         # at the downstream coordinate of intervals. Need to shift end coordinate of CDSs
-        cdsdf = samplecfg.cds.to_dataframe()
+        cdsdf = check_cds(samplecfg.cds)
         tsdshiftCDS = tsd_shift(cdsdf, samplecfg.tsd)
 
         if os.path.exists(samplecfg.integfn):
             # filtering of positions matching homologous recombination
             trueint, ltr5, ltr3, sololtr, excludepos = filter_homrecomb(samplecfg, config, fn)
             # maping relative to ORFs
-            truedicts = trueint.to_dict('records')
-            locdicts = [make_location(x, samplecfg, tsdshiftCDS, cdsdf, legacy_mode) for x in truedicts]
-            location = pd.DataFrame.from_dict(locdicts)
+            truebed = integ_to_bed(trueint)
+            location = make_location(truebed, trueint, samplecfg, tsdshiftCDS, cdsdf)
             orf, intergenic = make_intervals(location, samplecfg)
             # count integrations mapped to the different categories
             counter = make_counter(location, ltr5, ltr3, sololtr, excludepos, samplecfg, counter)
