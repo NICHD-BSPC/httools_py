@@ -57,7 +57,7 @@ def get_id_dict(samplecfg):
     # returns dictionnary sequence ids with number of duplicates
     ids = pd.read_csv(samplecfg.ids, sep='\t', index_col='Id')
     integ = pd.read_csv(samplecfg.integ, sep='\t')['Id'].tolist()
-    ids = ids.loc[integ,'id'].tolist()
+    ids = ids.loc[ids.index.intersection(integ),'id'].tolist()
 
     def split_val(val, subpattern, splitpattern):
         val = re.sub(subpattern, '', val)
