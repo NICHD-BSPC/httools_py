@@ -19,3 +19,4 @@ dependencies:
   - r-plotly>=4.9.2
   - r-tidyselect>=1.1.0
   - snakemake-minimal>=5.15.0,<5.18
+  - r-htmlwidgets>=1.5.2.9001
